@@ -1,0 +1,79 @@
+{
+    "com.github.kleber-swf.ulauncher-firefox-profiles": {
+        "id": "com.github.kleber-swf.ulauncher-firefox-profiles",
+        "url": "https://github.com/kleber-swf/ulauncher-firefox-profiles",
+        "updated_at": "2025-02-08T12:03:56.240669",
+        "last_commit": "8c56e7ef9f48b10554bdca7fa3f2a067b186e1e3",
+        "last_commit_time": "2024-08-09T13:37:14"
+    },
+    "com.github.ahaasler.ulauncher-tmux": {
+        "id": "com.github.ahaasler.ulauncher-tmux",
+        "url": "https://github.com/ahaasler/ulauncher-tmux",
+        "updated_at": "2025-02-08T12:04:51.795611",
+        "last_commit": "dd631a2e5a1d8bf2ab21095b43afe068443f02b9",
+        "last_commit_time": "2021-06-05T16:42:59"
+    },
+    "com.github.ygun.ulauncher-nm": {
+        "id": "com.github.ygun.ulauncher-nm",
+        "url": "https://github.com/ygun/ulauncher-nm",
+        "updated_at": "2025-02-08T12:12:56.992908",
+        "last_commit": "036a0b3b24fb325f7aa648872c916d04966e7101",
+        "last_commit_time": "2021-02-03T13:17:59"
+    },
+    "com.github.sergius02.ulauncher-gbox": {
+        "id": "com.github.sergius02.ulauncher-gbox",
+        "url": "https://github.com/sergius02/ulauncher-gbox",
+        "updated_at": "2025-02-08T12:13:44.108703",
+        "last_commit": "839dfdfacf89d090a9a2ab720f59cc80828c60eb",
+        "last_commit_time": "2021-02-05T17:19:27"
+    },
+    "com.github.randomcharacter.ulauncher-meet": {
+        "id": "com.github.randomcharacter.ulauncher-meet",
+        "url": "https://github.com/randomCharacter/ulauncher-meet",
+        "updated_at": "2025-02-08T12:14:39.062527",
+        "last_commit": "f2fe055b6e21e15ea4c65918a6f499d61d4cf4b0",
+        "last_commit_time": "2021-02-26T22:04:21"
+    },
+    "com.github.brpaz.ulauncher-gitlab": {
+        "id": "com.github.brpaz.ulauncher-gitlab",
+        "url": "https://github.com/brpaz/ulauncher-gitlab",
+        "updated_at": "2025-02-08T12:33:06.146063",
+        "last_commit": "291d9bf25f415ad358c28d465ed73751ee176dc4",
+        "last_commit_time": "2021-12-12T15:46:42"
+    },
+    "com.github.eckhoff42.ulauncher-bluetooth-quick-connect": {
+        "id": "com.github.eckhoff42.ulauncher-bluetooth-quick-connect",
+        "url": "https://github.com/Eckhoff42/Ulauncher-Bluetooth-quick-connect",
+        "updated_at": "2025-02-08T17:53:43.991407",
+        "last_commit": "2cb1d85cdfa870888e3eeda733b63467b0966ad1",
+        "last_commit_time": "2022-05-10T15:18:43"
+    },
+    "com.github.hillaryychan.ulauncher-fzf": {
+        "id": "com.github.hillaryychan.ulauncher-fzf",
+        "url": "https://github.com/hillaryychan/ulauncher-fzf",
+        "updated_at": "2025-02-08T17:56:05.094479",
+        "last_commit": "e8137dae6448041fc53ae418263501b068857073",
+        "last_commit_time": "2023-05-16T12:35:35"
+    },
+    "com.github.zakuciael.ulauncher-jetbrains-reloaded": {
+        "id": "com.github.zakuciael.ulauncher-jetbrains-reloaded",
+        "url": "https://github.com/zakuciael/ulauncher-jetbrains-reloaded",
+        "updated_at": "2025-02-08T17:56:38.151798",
+        "last_commit": "9f60e2dc6f51cbe3161031d33e6ab8f85dce2d82",
+        "last_commit_time": "2024-04-11T05:40:03"
+    },
+    "com.github.melianmiko.ulauncher-nmcli": {
+        "id": "com.github.melianmiko.ulauncher-nmcli",
+        "url": "https://github.com/melianmiko/ulauncher-nmcli",
+        "updated_at": "2025-02-08T17:57:43.908902",
+        "last_commit": "13f226d83f8feac3cf6f73532cce1ffc23f42700",
+        "last_commit_time": "2024-10-11T14:18:16"
+    },
+    "com.github.kazumasan.ulauncher-sessions": {
+        "id": "com.github.kazumasan.ulauncher-sessions",
+        "url": "https://github.com/Kazumasan/ulauncher-sessions",
+        "updated_at": "2025-02-08T17:58:49.733389",
+        "last_commit": "d999aeb6db95695e82119c898d0e657d25320a4e",
+        "last_commit_time": "2021-08-13T20:20:23"
+    }
+}

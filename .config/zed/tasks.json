@@ -1,0 +1,69 @@
+[
+  {
+    "label": "Go: add json tags",
+    "command": "gomodifytags -file $ZED_FILE -struct $ZED_SYMBOL -add-tags json -w",
+    "reveal": "never",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": true
+  },
+  {
+    "label": "Go: remove json tags",
+    "command": "gomodifytags -file $ZED_FILE -struct $ZED_SYMBOL -remove-tags json -w",
+    "reveal": "never",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": true
+  },
+  {
+    "label": "Go: Implement interface",
+    "command": "echo 'Type the name of the interface to implement:' && read interfaceName && impl '_ *$ZED_SYMBOL' $interfaceName >> $ZED_FILE && gofmt -w $ZED_FILE && goimports -w $ZED_FILE",
+    "reveal": "always",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false
+  },
+  {
+    "label": "Make: run",
+    "command": "cd $ZED_WORKTREE_ROOT && make run",
+    "reveal": "always",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false
+  },
+  {
+    "label": "Make: build",
+    "command": "cd $ZED_WORKTREE_ROOT && make build",
+    "reveal": "always",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false
+  },
+  {
+    "label": "Make: clean",
+    "command": "cd $ZED_WORKTREE_ROOT && make clean",
+    "reveal": "always",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false
+  },
+  {
+    "label": "Java Google Format File",
+    "command": "google-java-format -i $ZED_FILE",
+    "reveal": "never"
+  },
+  {
+    "label": "Git: LazyGit",
+    "command": "lazygit -p $ZED_WORKTREE_ROOT",
+    "hide": "always",
+    // "reveal": "always",
+    // "use_new_terminal": true,
+    "allow_concurrent_runs": false
+  },
+  {
+    "label": "Git: Write Commit Message",
+    "command": "git diff --staged | cody chat --stdin -m 'Write a descriptive commit message for this diff. Give me only a message to add to commit.' | wl-copy && git commit",
+    "hide": "always",
+    "allow_concurrent_runs": false
+  },
+  {
+    "label": "Posting",
+    "command": "posting",
+    "hide": "always",
+    "allow_concurrent_runs": false
+  }
+]

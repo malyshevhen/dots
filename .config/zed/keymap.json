@@ -1,0 +1,148 @@
+// Defaults
+//
+// # Language server
+// g d     Go to definition
+// g D     Go to type definition
+// g cmd-d Go to implementation
+// c d     Rename (change definition)
+// g A     Go to All references to the current word
+
+// g s   Find symbol in current file
+// g S   Find symbol in entire project
+
+// g ]   Go to next diagnostic
+// g [   Go to previous diagnostic
+// ] d   Go to next diagnostic
+// [ d   Go to previous diagnostic
+// g h   Show inline error (hover)
+// g .   Open the code actions menu
+
+// # Git
+// ] c   Go to next git change
+// [ c   Go to previous git change
+
+// # Treesitter
+// ] x   Select a smaller syntax node
+// [ x   Select a larger syntax node
+
+// # Multi cursor
+// g l   Add a visual selection for the next copy of the current word
+// g L   The same, but backwards
+// g >   Skip latest word selection, and add next.
+// g <   The same, but backwards
+// g a   Add a visual selection for every copy of the current word
+
+// # Pane management
+// g /        Open a project-wide search
+// g <space>  Open the current search excerpt
+// <ctrl-w> <space>  Open the current search excerpt in a split
+// <ctrl-w> g d      Go to definition in a split
+// <ctrl-w> g D      Go to type definition in a split
+
+// # Insert mode
+// i a / a a      Select the function argument the cursor is in
+// ctrl-x ctrl-o  Open the completion menu
+// ctrl-x ctrl-c  Request GitHub Copilot suggestion (if configured)
+// ctrl-x ctrl-a  Open the inline AI assistant (if configured)
+// ctrl-x ctrl-l  Open the code actions menu
+// ctrl-x ctrl-z  Hides all suggestions
+
+// # Ex commands
+// :E[xplore]    Open the project panel
+// :C[ollab]     Open the collaboration panel
+// :Ch[at]       Open the chat panel
+// :A[I]         Open the AI panel
+// :No[tif]      Open the notifications panel
+// :fe[edback]   Open the feedback window
+// :cl[ist]      Open the diagnostics window
+// :te[rm]       Open the terminal
+// :Ext[ensions] Open the extensions window
+
+[
+  {
+    "context": "Workspace",
+    "bindings": {}
+  },
+  {
+    "bindings": {
+      "ctrl-\\": "workspace::ToggleLeftDock",
+      "alt-\\": "workspace::ToggleLeftDock"
+    }
+  },
+  {
+    "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+    "bindings": {
+      // put key-bindings here if you want them to work in normal & visual mode
+      "alt-\\": "outline_panel::ToggleFocus",
+      "ctrl-\\": "project_panel::ToggleFocus",
+      "[ d": "editor::GoToPrevDiagnostic",
+      "] d": "editor::GoToDiagnostic",
+      "[ c": "editor::GoToPrevHunk",
+      "] c": "editor::GoToHunk",
+      "[ b": "pane::ActivatePrevItem",
+      "] b": "pane::ActivateNextItem",
+      "space c a": "editor::ToggleCodeActions",
+      "space r n": "editor::Rename",
+      "space x x": "diagnostics::Deploy",
+      "space s f": "file_finder::Toggle",
+      "space s w": "workspace::NewSearch",
+      "space s g": "pane::DeploySearch",
+      "space o": "tab_switcher::Toggle",
+      "space p": "outline::Toggle",
+      "g d": "editor::GoToDefinition",
+      "space g d": "editor::GoToDefinitionSplit",
+      "g D": "editor::GoToTypeDefinition",
+      "space g D": "editor::GoToTypeDefinitionSplit",
+      "g i": "editor::GoToImplementation",
+      "space g i": "editor::GoToImplementationSplit",
+      "g r": "editor::FindAllReferences",
+      "shift-k": "editor::Hover",
+      // "space t": "terminal_panel::ToggleFocus",
+      "space t t": "workspace::NewCenterTerminal",
+      "space a t": ["task::Spawn", { "task_name": "Go: add json tags" }],
+      "space r t": ["task::Spawn", { "task_name": "Go: remove json tags" }],
+      // "space j f": ["task::Spawn", { "task_name": "Java Google Format File" }],
+      "space t g": [
+        "task::Spawn",
+        { "task_name": "Git: LazyGit", "reveal_target": "center" }
+      ],
+      "space t c": [
+        "task::Spawn",
+        { "task_name": "Git: Write Commit Message", "reveal_target": "center" }
+      ],
+      "space t p": [
+        "task::Spawn",
+        { "task_name": "Posting", "reveal_target": "center" }
+      ]
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+    "bindings": {
+      // put key-bindings here if you want them to work only in normal mode
+      // "down": ["workspace::SendKeystrokes", "4 j"]
+      // "up": ["workspace::SendKeystrokes", "4 k"]
+      "space c f": "editor::Format"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == visual && !VimWaiting && !menu",
+    "bindings": {
+      // visual, visual line & visual block modes
+      "alt-k": "editor::MoveLineUp",
+      "alt-j": "editor::MoveLineDown",
+      "alt-h": "editor::MoveLeft",
+      "alt-l": "editor::MoveRight",
+      "space c f": "editor::FormatSelections"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == insert && !menu",
+    "bindings": {
+      // put key-bindings here if you want them to work in insert mode
+      // e.g.
+      "j j": "vim::NormalBefore", // remap jj in insert mode to escape.
+      "k k": "vim::NormalBefore" // remap jj in insert mode to escape.
+    }
+  }
+]
