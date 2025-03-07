@@ -12,6 +12,7 @@ background-blur-radius = 20
 
 shell-integration-features = no-cursor
 
+gtk-titlebar=true
 # custom-shader = shaders/animated-gradient-shader.glsl
 # custom-shader = shaders/bettercrt.glsl
 # custom-shader = shaders/bloom.glsl

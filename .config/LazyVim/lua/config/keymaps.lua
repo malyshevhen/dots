@@ -1,9 +1,6 @@
 -- Keymaps are automatically loaded on the VeryLazy event
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
-vim.keymap.set("n", "\\", ":Neotree toggle<CR>", { desc = "NeoTree toggle" })
-vim.keymap.set("n", "<leader>e", ":Neotree reveal<CR>", { desc = "NeoTree reveal" })
-
 vim.keymap.set('n', '<C-t>', function()
   require('menu').open 'default'
 end, {})

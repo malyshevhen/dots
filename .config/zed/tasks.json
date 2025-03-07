@@ -1,5 +1,13 @@
 [
   {
+    "label": "Go: suite run single",
+    // go test -v <file_path> -run ^<method_caller>$ -testify.m <method>
+    "command": "go test -v $ZED_DIRNAME -run Suite$ -testify.m $ZED_SYMBOL",
+    "reveal": "always",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": true
+  },
+  {
     "label": "Go: add json tags",
     "command": "gomodifytags -file $ZED_FILE -struct $ZED_SYMBOL -add-tags json -w",
     "reveal": "never",

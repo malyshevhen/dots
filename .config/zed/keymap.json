@@ -99,21 +99,12 @@
       "shift-k": "editor::Hover",
       // "space t": "terminal_panel::ToggleFocus",
       "space t t": "workspace::NewCenterTerminal",
-      "space a t": ["task::Spawn", { "task_name": "Go: add json tags" }],
-      "space r t": ["task::Spawn", { "task_name": "Go: remove json tags" }],
+      "space a t": ["task::Spawn", { "task_name": "go:_add_json_tags" }],
+      "space r t": ["task::Spawn", { "task_name": "go:_remove_json_tags" }],
       // "space j f": ["task::Spawn", { "task_name": "Java Google Format File" }],
-      "space t g": [
-        "task::Spawn",
-        { "task_name": "Git: LazyGit", "reveal_target": "center" }
-      ],
-      "space t c": [
-        "task::Spawn",
-        { "task_name": "Git: Write Commit Message", "reveal_target": "center" }
-      ],
-      "space t p": [
-        "task::Spawn",
-        { "task_name": "Posting", "reveal_target": "center" }
-      ]
+      "space t g": ["task::Spawn", { "task_name": "git:_lazy_git" }],
+      "space t c": ["task::Spawn", { "task_name": "git:_write_commit_message" }],
+      "space t p": ["task::Spawn", { "task_name": "posting" }]
     }
   },
   {
@@ -141,8 +132,8 @@
     "bindings": {
       // put key-bindings here if you want them to work in insert mode
       // e.g.
-      "j j": "vim::NormalBefore", // remap jj in insert mode to escape.
-      "k k": "vim::NormalBefore" // remap jj in insert mode to escape.
+      // "j j": "vim::NormalBefore", // remap jj in insert mode to escape.
+      // "k k": "vim::NormalBefore" // remap jj in insert mode to escape.
     }
   }
 ]

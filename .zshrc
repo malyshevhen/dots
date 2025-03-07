@@ -12,6 +12,8 @@ export JAVA_HOME=/home/evhen/.sdkman/candidates/java/current
 export ARTIFACTORY_USERNAME=$(secret-tool lookup key kaa_username)
 export ARTIFACTORY_PASSWORD=$(secret-tool lookup key kaa_password)
 export GITLAB_TOKEN=$(secret-tool lookup key gitlab_token)
+export GITLAB_USER=$(secret-tool lookup key gitlab_user)
+export GITLAB_PASSWORD=$(secret-tool lookup key gitlab_password)
 export GITLAB_VIM_URL='https://gitlab.kaaiot.net'
 
 # AI API secrets
@@ -69,12 +71,13 @@ autoload -U compinit && compinit
 zinit cdreplay -q
 
 # Golang
-export GOPATH=/home/evhen/.local/go
-export GOBIN=/home/evhen/go/bin
-export PATH=$PATH:/usr/local/go/bin
-export PATH=$PATH:/home/evhen/.local/go/bin
-export PATH=$PATH:$GOBIN
-export PATH=$PATH:/usr/lib/w3m
+export GOROOT=$HOME/.local/go
+export GOPATH=$HOME/go
+export GOBIN=$HOME/.local/bin
+export PATH=$GOROOT/bin:$PATH
+export PATH=$GOPATH/bin:$PATH
+export PATH=$GOBIN:$PATH
+export PATH=/usr/lib/w3m:$PATH
 export GOPRIVATE=gitlab.kaaiot.net
 
 #Python

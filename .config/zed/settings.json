@@ -7,16 +7,17 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "show_edit_predictions": true,
   "assistant": {
     "enable_experimental_live_diffs": true,
     "default_model": {
       "provider": "google",
-      "model": "gemini-2.0-flash-exp"
+      "model": "gemini-2.0-flash"
     },
     "version": "2"
   },
   "features": {
-    "inline_completion_provider": "supermaven",
+    "edit_prediction_provider": "supermaven"
   },
   "git": {
     "git_gutter": "tracked_files",
@@ -30,7 +31,7 @@
   "vim_mode": true,
   "vertical_scroll_margin": 10,
   "horizontal_scroll_margin": 5,
-  "theme": "0x96f Theme",
+  "theme": "Github Dark Dimmed",
   "toolbar": {
     "breadcrumbs": true,
     "quick_actions": true,
@@ -103,14 +104,17 @@
   },
   "format_on_save": "off",
   "languages": {
+    "Go": {
+      "show_edit_predictions": true
+    },
     "Lua": {
-      "show_inline_completions": false
+      "show_edit_predictions": false
     },
     "Cypher": {
-      "show_inline_completions": false
+      "show_edit_predictions": false
     },
     "Plain Text": {
-      "show_inline_completions": false
+      "show_edit_predictions": false
     },
     "Java": {
       "formatter": {
@@ -143,22 +147,23 @@
       }
     },
     "gopls": {
-      "gofumpt": true,
       "initialization_options": {
+        "gofumpt": true,
+        "semanticTokens": true,
+        "directoryFilters": ["-**/node_modules", "-**/.git"],
+        "symbolScope": "workspace",
+        "staticcheck": true,
+        "vulncheck": "Imports",
+        "templateExtensions": ["tmpl"],
         "hints": {
           "assignVariableTypes": true,
           "compositeLiteralFields": false,
           "compositeLiteralTypes": false,
-          "constantValues": false,
+          "constantValues": true,
           "functionTypeParameters": false,
-          "parameterNames": false,
-          "rangeVariableTypes": false
+          "parameterNames": true,
+          "rangeVariableTypes": true
         },
-        "directoryFilters": ["-**/node_modules", "-**/.git"],
-        "gofumpt": true,
-        "symbolScope": "workspace",
-        "staticcheck": true,
-        "templateExtensions": ["tmpl"],
         "analyses": {
           "nilness": true,
           "unusedparams": true,
@@ -167,7 +172,13 @@
           "useany": true
         },
         "codelenses": {
-          "gc_details": true
+          "gc_details": true,
+          "test": true,
+          "generate": true,
+          "regenerate_cgo": true,
+          "tidy": true,
+          "upgrade_dependency": true,
+          "vulncheck": true
         }
       }
     },
