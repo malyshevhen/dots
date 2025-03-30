@@ -5,7 +5,7 @@ M.priority = 1000
 M.lazy = false
 
 ---@type snacks.input.Config
-local inputConf = {
+local input = {
   enabled = true,
   icon = ' ',
   icon_hl = 'SnacksInputIcon',
@@ -16,19 +16,19 @@ local inputConf = {
 }
 
 ---@type snacks.Config
-M.options = {
-  input = inputConf,
-  notifier = { enabled = false, timeout = 3000 },
+M.opts = {
+  input = input,
+  notifier = { enabled = true, timeout = 3000 },
   quickfile = { enabled = true },
   scroll = { enabled = true },
   statuscolumn = { enabled = true },
   words = { enabled = true },
   picker = { enabled = true },
-  dashboard = { enabled = false },
+  dashboard = { enabled = true },
   indent = { enabled = true },
 }
 
-M.options.styles = {
+M.opts.styles = {
   notification = {
     wo = { wrap = true }, -- Wrap notifications
   },
