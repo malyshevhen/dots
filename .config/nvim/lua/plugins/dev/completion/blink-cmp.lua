@@ -15,12 +15,24 @@ M.opts = {
     nerd_font_variant = 'mono',
   },
 
-  completion = { documentation = { auto_show = false } },
+  completion = {
+    documentation = { auto_show = false },
+    ghost_text = { enabled = true },
+  },
 
   signature = { enabled = true },
 
   sources = {
-    default = { 'lsp', 'path', 'snippets', 'buffer' },
+    default = { 'lsp', 'path', 'snippets', 'buffer', 'supermaven' },
+
+    providers = {
+      supermaven = {
+        name = 'supermaven',
+        module = 'blink.compat.source',
+        score_offset = -3,
+        opts = {},
+      },
+    },
   },
 
   fuzzy = { implementation = 'prefer_rust_with_warning' },
