@@ -9,8 +9,6 @@ M.config = function()
   vim.o.foldenable = true
 
   -- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
-  vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
-  vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
 
   -- (Note: the `nvim-treesitter` plugin is *not* needed.)
   -- ufo uses the same query files for folding (queries/<lang>/folds.scm)
@@ -19,6 +17,14 @@ M.config = function()
     provider_selector = function(bufnr, filetype, buftype)
       return { 'treesitter', 'indent' }
     end,
+  }
+end
+
+-- stylua: ignore
+M.keys = function()
+  return {
+    { 'zR', require('ufo').openAllFolds,  desc = 'Open All Folds' },
+    { 'zM', require('ufo').closeAllFolds, desc = 'Close All Folds' },
   }
 end
 

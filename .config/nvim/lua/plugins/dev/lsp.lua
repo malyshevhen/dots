@@ -46,7 +46,6 @@ local servers = {
           parameterNames = false,
           rangeVariableTypes = false,
         },
-
         analyses = {
           nilness = true,
           unusedparams = true,
@@ -289,10 +288,9 @@ end
 
 -- stylua: ignore
 M.keys = {
-        { 'gD',         vim.lsp.buf.declaration, desc = '[G]oto [D]eclaration', mode = { 'n' } },
-        { '<leader>cr', vim.lsp.buf.rename,      desc = '[C]ode [R]ename',      mode = { 'n' } },
-        { '<leader>cf', vim.lsp.buf.format,      desc = '[C]ode [F]ormat',      mode = { 'n', 'v' } },
-        { '<leader>ca', vim.lsp.buf.code_action, desc = '[C]ode [A]ction',      mode = { 'n', 'v' } },
+  { 'gD',         vim.lsp.buf.declaration, desc = '[G]oto [D]eclaration', mode = { 'n' } },
+  { '<leader>cr', vim.lsp.buf.rename,      desc = '[C]ode [R]ename',      mode = { 'n' } },
+  { '<leader>ca', vim.lsp.buf.code_action, desc = '[C]ode [A]ction',      mode = { 'n', 'v' } },
 }
 
 return M

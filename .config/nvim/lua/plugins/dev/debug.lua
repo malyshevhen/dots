@@ -63,15 +63,15 @@ end
 
 -- stylua: ignore
 M.keys = function()
-        return {
-                { '<F5>',      require('dap').continue,                                                             { desc = 'Debug: Start/Continue' } },
-                { '<F1>',      require('dap').step_into,                                                            { desc = 'Debug: Step Into' } },
-                { '<F2>',      require('dap').step_over,                                                            { desc = 'Debug: Step Over' } },
-                { '<F3>',      require('dap').step_out,                                                             { desc = 'Debug: Step Out' } },
-                { '<leader>b', require('dap').toggle_breakpoint,                                                    { desc = 'Debug: Toggle Breakpoint' } },
-                { '<leader>B', function() require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ') end, { desc = 'Debug: Set Breakpoint' } },
-                { '<F7>',      require('dapui').toggle,                                                             { desc = 'Debug: See last session result.' } },
-        }
+  return {
+    { '<F5>',      require('dap').continue,                                                             { desc = 'Debug: Start/Continue' } },
+    { '<F1>',      require('dap').step_into,                                                            { desc = 'Debug: Step Into' } },
+    { '<F2>',      require('dap').step_over,                                                            { desc = 'Debug: Step Over' } },
+    { '<F3>',      require('dap').step_out,                                                             { desc = 'Debug: Step Out' } },
+    { '<leader>b', require('dap').toggle_breakpoint,                                                    { desc = 'Debug: Toggle Breakpoint' } },
+    { '<leader>B', function() require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ') end, { desc = 'Debug: Set Breakpoint' } },
+    { '<F7>',      require('dapui').toggle,                                                             { desc = 'Debug: See last session result.' } },
+  }
 end
 
 return M

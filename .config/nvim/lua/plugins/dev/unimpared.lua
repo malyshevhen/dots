@@ -1,6 +1,4 @@
-local M = {
-  'tummetott/unimpaired.nvim',
-}
+local M = { 'tummetott/unimpaired.nvim' }
 
 M.event = 'VeryLazy'
 M.opts = {}

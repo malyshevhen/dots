@@ -8,8 +8,8 @@ end
 
 -- stylua: ignore
 M.keys = {
-        { '<leader>rm', '<cmd>MarkdownPreview<cr>',     desc = 'Toggle Markdown Preview' },
-        { '<leader>rs', '<cmd>MarkdownPreviewStop<cr>', desc = 'Stop Markdown Preview' },
+  { '<leader>rm', '<cmd>MarkdownPreview<cr>',     desc = 'Toggle Markdown Preview' },
+  { '<leader>rs', '<cmd>MarkdownPreviewStop<cr>', desc = 'Stop Markdown Preview' },
 }
 
 M.cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' }

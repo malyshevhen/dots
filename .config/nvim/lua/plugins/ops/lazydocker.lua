@@ -10,7 +10,7 @@ M.dependencies = {
 
 -- stylua: ignore
 M.keys = {
-        { '<leader>ld', '<cmd>LazyDocker<cr>', desc = 'LazyDocker' },
+  { '<leader>ld', '<cmd>LazyDocker<cr>', desc = 'LazyDocker' },
 }
 
 return M

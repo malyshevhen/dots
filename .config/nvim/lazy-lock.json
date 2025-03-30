@@ -3,6 +3,7 @@
   "blink.cmp": { "branch": "main", "commit": "49f211fe5d729df53df4c042d7c3464cf47d199e" },
   "clangd_extensions.nvim": { "branch": "main", "commit": "db28f29be928d18cbfb86fbfb9f83f584f658feb" },
   "completion-nvim": { "branch": "master", "commit": "87b0f86da3dffef63b42845049c648b5d90f1c4d" },
+  "conform.nvim": { "branch": "master", "commit": "f9ef25a7ef00267b7d13bfc00b0dea22d78702d5" },
   "crates.nvim": { "branch": "main", "commit": "fd2bbca7aa588f24ffc3517831934b4c4a9588e9" },
   "cspell.nvim": { "branch": "main", "commit": "fb104ec1e06e984baefcad6a0559381f5d933442" },
   "cypher.vim": { "branch": "master", "commit": "34280717f4a4bbc6adf09f3abd54a3e9f142adb3" },

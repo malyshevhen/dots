@@ -32,13 +32,13 @@ end
 
 -- stylua: ignore
 M.keys = function()
-        return {
-                { 'K',           require('hover').hover,                                  desc = 'hover.nvim' },
-                { 'gK',          require('hover').hover_select,                           desc = 'hover.nvim (select)' },
-                { '<C-p>',       function() require('hover').hover_switch 'previous' end, desc = 'hover.nvim (previous source)' },
-                { '<C-n>',       function() require('hover').hover_switch 'next' end,     desc = 'hover.nvim (next source)' },
-                { '<MouseMove>', require('hover').hover_mouse,                            desc = 'hover.nvim (mouse)' },
-        }
+  return {
+    { 'K',           require('hover').hover,                                  desc = 'hover.nvim' },
+    { 'gK',          require('hover').hover_select,                           desc = 'hover.nvim (select)' },
+    { '<C-p>',       function() require('hover').hover_switch 'previous' end, desc = 'hover.nvim (previous source)' },
+    { '<C-n>',       function() require('hover').hover_switch 'next' end,     desc = 'hover.nvim (next source)' },
+    { '<MouseMove>', require('hover').hover_mouse,                            desc = 'hover.nvim (mouse)' },
+  }
 end
 
 return M
