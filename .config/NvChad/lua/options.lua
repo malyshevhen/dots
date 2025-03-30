@@ -22,7 +22,7 @@ o.swapfile = false
 
 o.relativenumber = true
 
-o.scrolloff = 30
+o.scrolloff = 10
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 o.mouse = 'a'
@@ -75,10 +75,10 @@ vim.g.have_nerd_font = true
 
 vim.wo.number = true
 
-vim.cmd 'set expandtab'
-vim.cmd 'set tabstop=2'
-vim.cmd 'set softtabstop=2'
-vim.cmd 'set shiftwidth=2'
+-- vim.cmd 'set expandtab'
+-- vim.cmd 'set tabstop=2'
+-- vim.cmd 'set softtabstop=2'
+-- vim.cmd 'set shiftwidth=2'
 
 vim.api.nvim_create_autocmd("BufDelete", {
   callback = function()

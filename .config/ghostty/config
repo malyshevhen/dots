@@ -1,4 +1,4 @@
-theme = iTerm2 Pastel Dark Background
+theme = iTerm2 Smoooooth
 
 font-size = 13
 font-family = "SFMono Nerd Font Mono"
@@ -7,12 +7,13 @@ cursor-style = block
 cursor-style-blink = false
 cursor-opacity = 0.80
 
-background-opacity = 0.80
-background-blur-radius = 20
+background=black
+background-opacity=0.75
+background-blur=true
 
 shell-integration-features = no-cursor
 
-gtk-titlebar=true
+# gtk-titlebar=true
 # custom-shader = shaders/animated-gradient-shader.glsl
 # custom-shader = shaders/bettercrt.glsl
 # custom-shader = shaders/bloom.glsl

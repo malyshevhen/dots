@@ -32,6 +32,7 @@ application/xhtml+xml=zen.desktop
 application/x-extension-xhtml=zen.desktop
 application/x-extension-xht=zen.desktop
 image/tiff=org.gnome.Loupe.desktop
+text/plain=dev.zed.Zed.desktop
 
 [Added Associations]
 x-scheme-handler/tonsite=org.telegram.desktop.desktop;
@@ -60,3 +61,5 @@ application/xhtml+xml=zen.desktop;firefox.desktop;
 application/x-extension-xhtml=zen.desktop;firefox.desktop;
 application/x-extension-xht=zen.desktop;firefox.desktop;
 image/tiff=org.gnome.Loupe.desktop;
+application/octet-stream=org.gnome.TextEditor.desktop;
+text/plain=dev.zed.Zed.desktop;

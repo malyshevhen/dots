@@ -1,9 +1,7 @@
 return {
   { import = 'plugins.dev.lsp' },
   { import = 'plugins.dev.cypher' },
-  { import = 'plugins.dev.clang' },
   { import = 'plugins.dev.java' },
-  { import = 'plugins.dev.golang' },
   { import = 'plugins.dev.git' },
   { import = 'plugins.dev.dap' },
   { import = 'plugins.dev.rust' },

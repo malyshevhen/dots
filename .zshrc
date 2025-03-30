@@ -80,8 +80,14 @@ export PATH=$GOBIN:$PATH
 export PATH=/usr/lib/w3m:$PATH
 export GOPRIVATE=gitlab.kaaiot.net
 
-#Python
+# Python
 export PYTHONPATH=/usr/lib/python3.12/site-packages:$PYTHONPATH
+
+# ZVM
+export PATH=$HOME/.zvm/bin:$PATH
+
+# Odin
+export PATH=$HOME/odin/bin:$PATH
 
 export PATH="/usr/lib/ccache/bin/:$PATH"
 

@@ -56,8 +56,8 @@ M["zls"] = {
 
 -- Cypher LS
 M["cypher_ls"] = {
-  cmd = { "cypher-language-server", "--stdio" },
   filetypes = { "cypher" },
+  cmd = { "cypher-language-server", "--stdio" },
 }
 
 -- Cucumber LS
@@ -115,6 +115,35 @@ M["yamlls"] = {
 M["docker_compose_language_service"] = {
   filetypes = { "yaml.docker-compose" },
   root_dir = util.root_pattern("docker-compose.yaml", "docker-compose.yml", "compose.yaml", "compose.yml"),
+}
+
+M['lua_ls'] = {
+  -- cmd = {...},
+  -- filetypes = { ...},
+  -- capabilities = {},
+  settings = {
+    Lua = {
+      completion = {
+        callSnippet = 'Replace',
+      },
+      -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
+      -- diagnostics = { disable = { 'missing-fields' } },
+      diagnostics = {
+        globals = { 'vim' },
+      },
+      workspace = {
+        library = {
+          vim.fn.expand '$VIMRUNTIME/lua',
+          vim.fn.expand '$VIMRUNTIME/lua/vim/lsp',
+          vim.fn.stdpath 'data' .. '/lazy/ui/nvchad_types',
+          vim.fn.stdpath 'data' .. '/lazy/lazy.nvim/lua/lazy',
+          '${3rd}/luv/library',
+        },
+        maxPreload = 100000,
+        preloadFileSize = 10000,
+      },
+    },
+  },
 }
 
 return M

@@ -1,12 +1,14 @@
 vim.cmd 'set expandtab'
-vim.cmd 'set tabstop=4'
-vim.cmd 'set softtabstop=4'
-vim.cmd 'set shiftwidth=4'
+-- vim.cmd 'set tabstop=4'
+-- vim.cmd 'set softtabstop=4'
+-- vim.cmd 'set shiftwidth=4'
+ vim.cmd 'set autoindent'
+ vim.cmd 'set smartindent'
 
--- vim.api.nvim_set_option('clipboard', 'unnamed')
+vim.api.nvim_set_option_value('clipboard', 'unnamed', {})
 
 -- set faster completion
-vim.opt.updatetime = 100
+vim.opt.updatetime = 60
 
 -- disable backup file creation
 vim.opt.backup = false
@@ -50,35 +52,22 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
-vim.api.nvim_create_autocmd('BufWritePre', {
-  pattern = '*.go',
-  callback = function()
-    require('go.format').goimports()
-  end,
-  group = vim.api.nvim_create_augroup('goimports', {}),
-})
-
+-- vim.api.nvim_create_autocmd('BufWritePre', {
+--   pattern = '*.go',
+--   callback = function()
+--     require('go.format').goimports()
+--   end,
+--   group = vim.api.nvim_create_augroup('goimports', {}),
+-- })
+--
 vim.filetype.add {
   pattern = {
     ['docker-compose%.yml'] = 'yaml.docker-compose',
     ['docker-compose%.yaml'] = 'yaml.docker-compose',
     ['compose%.yml'] = 'yaml.docker-compose',
     ['compose%.yaml'] = 'yaml.docker-compose',
-    ['.*/hypr/.*%.conf'] = 'hyprlang',
   },
 }
 
 vim.api.nvim_create_user_command('CopyRelPath', "call setreg('+', expand('%'))", {})
 
--- Hyprlang LSP
-vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
-  pattern = { '*.hl', 'hypr*.conf' },
-  callback = function(event)
-    print(string.format('starting hyprls for %s', vim.inspect(event)))
-    vim.lsp.start {
-      name = 'hyprlang',
-      cmd = { 'hyprls' },
-      root_dir = vim.fn.getcwd(),
-    }
-  end,
-})

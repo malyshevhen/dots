@@ -1,5 +1,10 @@
-return {
-  "pmizio/typescript-tools.nvim",
-  dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-  opts = {},
+local M = { 'pmizio/typescript-tools.nvim' }
+
+M.dependencies = {
+  'nvim-lua/plenary.nvim',
+  'neovim/nvim-lspconfig',
 }
+
+M.opts = {}
+
+return M

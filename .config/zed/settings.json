@@ -11,8 +11,8 @@
   "assistant": {
     "enable_experimental_live_diffs": true,
     "default_model": {
-      "provider": "google",
-      "model": "gemini-2.0-flash"
+      "provider": "zed.dev",
+      "model": "claude-3-7-sonnet-latest"
     },
     "version": "2"
   },
@@ -55,7 +55,7 @@
   },
   "ui_font_family": "Monaspace Neon Var",
   "buffer_font_family": "Liga SFMono Nerd Font",
-  "buffer_font_size": 17.0,
+  "buffer_font_size": 16,
   "buffer_line_height": {
     "custom": 1.5
   },
@@ -102,8 +102,11 @@
     ],
     "Cucumber": ["feature"]
   },
-  "format_on_save": "off",
+  "format_on_save": "on",
   "languages": {
+    "Odin": {
+      "show_edit_predictions": false
+    },
     "Go": {
       "show_edit_predictions": true
     },
