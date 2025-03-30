@@ -2,8 +2,8 @@ vim.cmd 'set expandtab'
 -- vim.cmd 'set tabstop=4'
 -- vim.cmd 'set softtabstop=4'
 -- vim.cmd 'set shiftwidth=4'
- vim.cmd 'set autoindent'
- vim.cmd 'set smartindent'
+vim.cmd 'set autoindent'
+vim.cmd 'set smartindent'
 
 vim.api.nvim_set_option_value('clipboard', 'unnamed', {})
 
@@ -59,7 +59,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 --   end,
 --   group = vim.api.nvim_create_augroup('goimports', {}),
 -- })
---
+
 vim.filetype.add {
   pattern = {
     ['docker-compose%.yml'] = 'yaml.docker-compose',
@@ -70,4 +70,3 @@ vim.filetype.add {
 }
 
 vim.api.nvim_create_user_command('CopyRelPath', "call setreg('+', expand('%'))", {})
-

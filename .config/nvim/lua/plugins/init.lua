@@ -1,5 +1,4 @@
 return {
-  { import = "plugins.mini" },
   { import = "plugins.markdown" },
   { import = "plugins.ui" },
   { import = "plugins.dev" },
