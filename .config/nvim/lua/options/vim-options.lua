@@ -4,6 +4,7 @@ vim.cmd 'set expandtab'
 -- vim.cmd 'set shiftwidth=4'
 -- vim.cmd 'set autoindent'
 -- vim.cmd 'set smartindent'
+vim.cmd 'set completeopt=noselect'
 
 vim.api.nvim_set_option_value('clipboard', 'unnamed', {})
 
@@ -119,5 +120,25 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.bo.expandtab = false
     vim.bo.shiftwidth = 8
     vim.bo.tabstop = 8
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'sh' },
+  callback = function()
+    vim.bo.expandtab = false
+    vim.bo.shiftwidth = 2
+    vim.bo.softtabstop = 2
+    vim.bo.tabstop = 2
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'sql' },
+  callback = function()
+    vim.bo.expandtab = true
+    vim.bo.shiftwidth = 4
+    vim.bo.softtabstop = 4
+    vim.bo.tabstop = 4
   end,
 })

@@ -1,15 +1,15 @@
-theme = iTerm2 Smoooooth
+theme = GitHub Dark
 
 font-size = 13
 font-family = "SFMono Nerd Font Mono"
 
 cursor-style = block
 cursor-style-blink = false
-cursor-opacity = 0.80
+# cursor-opacity = 0.80
 
-background=black
-background-opacity=0.75
-background-blur=true
+# background=black
+# background-opacity=0.75
+# background-blur=true
 
 shell-integration-features = no-cursor
 

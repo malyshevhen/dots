@@ -208,6 +208,9 @@ local servers = {
 
   -- Zed
   ['zls'] = {},
+
+  -- Bash
+  ['bashls'] = {},
 }
 
 local ensure_installed = vim.tbl_keys(servers or {})
@@ -226,6 +229,9 @@ vim.list_extend(ensure_installed, {
   'black',
   'codelldb',
   'cspell',
+  'shellcheck',
+  'shfmt',
+  'sleek',
 })
 
 M.config = function()

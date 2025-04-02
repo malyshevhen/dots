@@ -16,6 +16,10 @@ M.config = function()
       go = { 'goimports', 'gofmt' },
       -- Java
       java = { 'google-java-format' },
+      -- Bash
+      sh = { 'shfmt' },
+      -- SQL
+      sql = { 'sleek' },
     },
 
     format_on_save = {

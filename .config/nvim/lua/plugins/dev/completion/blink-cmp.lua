@@ -15,25 +15,31 @@ M.opts = {
     nerd_font_variant = 'mono',
   },
 
-  completion = {
-    documentation = { auto_show = false },
-    ghost_text = { enabled = true },
+  sources = {
+    default = { 'lsp', 'path', 'buffer', 'snippets' },
   },
 
-  signature = { enabled = true },
+  completion = {
+    documentation = {
+      auto_show = false,
+    },
 
-  sources = {
-    default = { 'lsp', 'path', 'snippets', 'buffer', 'supermaven' },
+    list = {
+      max_items = 200,
 
-    providers = {
-      supermaven = {
-        name = 'supermaven',
-        module = 'blink.compat.source',
-        score_offset = -3,
-        opts = {},
+      selection = {
+        preselect = false,
+        auto_insert = false,
+      },
+
+      cycle = {
+        from_bottom = false,
+        from_top = false,
       },
     },
   },
+
+  signature = { enabled = true },
 
   fuzzy = { implementation = 'prefer_rust_with_warning' },
 }
