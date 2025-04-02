@@ -41,15 +41,12 @@ M.event = 'VeryLazy'
 M.version = false -- Never set this value to "*"! Never!
 
 M.opts = {
-  -- add any opts here
-  -- for example
   provider = 'gemini',
 }
 -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
 M.build = 'make'
 
 -- Custom hack to force gemini to load instead of claude
--- 2024-09-13
 M.init = function()
   vim.api.nvim_create_autocmd('VimEnter', {
     callback = function()
