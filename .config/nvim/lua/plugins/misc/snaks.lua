@@ -1,3 +1,10 @@
+local readAll = function(file)
+  local f = assert(io.open(file, 'rb'))
+  local content = f:read '*all'
+  f:close()
+  return content or ''
+end
+
 local M = { 'folke/snacks.nvim' }
 
 M.priority = 1000
@@ -19,13 +26,8 @@ local input = {
 local dashboard = {
   enabled = true,
   preset = {
-    header = [[
-    ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
-    ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
-    ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
-    ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
-    ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
-    ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]],
+    -- stylua: ignore
+    header = readAll(vim.fn.stdpath("config") .. "/dash-2"),
   },
 }
 
