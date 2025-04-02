@@ -15,6 +15,20 @@ local input = {
   expand = true,
 }
 
+---@type snacks.dashboard.Config
+local dashboard = {
+  enabled = true,
+  preset = {
+    header = [[
+    ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
+    ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
+    ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
+    ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
+    ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
+    ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]],
+  },
+}
+
 ---@type snacks.Config
 M.opts = {
   input = input,
@@ -24,7 +38,7 @@ M.opts = {
   statuscolumn = { enabled = true },
   words = { enabled = true },
   picker = { enabled = true },
-  dashboard = { enabled = true },
+  dashboard = dashboard,
   indent = { enabled = true },
 }
 
