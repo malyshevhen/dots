@@ -7,6 +7,7 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "icon_theme": "Bearded Icon Theme",
   "show_edit_predictions": true,
   "assistant": {
     "enable_experimental_live_diffs": true,
@@ -45,7 +46,7 @@
     "button": false
   },
   "chat_panel": {
-    "button": false
+    "button": "never"
   },
   "project_panel": {
     "indent_size": 10,
@@ -55,6 +56,47 @@
   },
   "ui_font_family": "Monaspace Neon Var",
   "buffer_font_family": "Liga SFMono Nerd Font",
+  "buffer_font_ligatures": true,
+  "buffer_font_features": {
+    "calt": true,
+    "case": true,
+    "cpsp": true,
+    "dlig": true,
+    "frac": true,
+    "hist": true,
+    "kern": true,
+    "liga": true,
+    "lnum": true,
+    "onum": true,
+    "ordn": true,
+    "pnum": true,
+    "tnum": true,
+    "swsh": true,
+    "subs": true,
+    "sups": true,
+    "tnum": true,
+    "ss01": true,
+    "ss02": true,
+    "ss03": true,
+    "ss04": true,
+    "ss05": true,
+    "ss06": true,
+    "ss07": true,
+    "ss08": true,
+    "ss09": true,
+    "ss10": true,
+    "ss11": true,
+    "ss12": true,
+    "ss13": true,
+    "ss14": true,
+    "ss15": true,
+    "ss16": true,
+    "ss17": true,
+    "ss18": true,
+    "ss19": true,
+    "ss20": true,
+    "zero": true
+  },
   "buffer_font_size": 16,
   "buffer_line_height": {
     "custom": 1.5

@@ -1,3 +1,6 @@
+vim.cmd 'set verbosefile=~/.local/state/nvim/verbose.log'
+vim.cmd 'set verbose=15'
+
 vim.cmd 'set expandtab'
 -- vim.cmd 'set tabstop=4'
 -- vim.cmd 'set softtabstop=4'
@@ -59,10 +62,11 @@ vim.filetype.add {
     ['docker-compose%.yaml'] = 'yaml.docker-compose',
     ['compose%.yml'] = 'yaml.docker-compose',
     ['compose%.yaml'] = 'yaml.docker-compose',
+    ['*.raml'] = 'raml',
   },
 }
 
-vim.api.nvim_create_user_command('CopyRelPath', "call setreg('+', expand('%'))", {})
+-- vim.api.nvim_create_user_command('CopyRelPath', "call setreg('+', expand('%'))", {})
 
 vim.api.nvim_create_autocmd('BufWritePre', {
   pattern = '*',
@@ -140,5 +144,35 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.bo.shiftwidth = 4
     vim.bo.softtabstop = 4
     vim.bo.tabstop = 4
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'gleam' },
+  callback = function()
+    vim.bo.expandtab = true
+    vim.bo.shiftwidth = 2
+    vim.bo.softtabstop = 2
+    vim.bo.tabstop = 2
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'raml' },
+  callback = function()
+    vim.bo.expandtab = true
+    vim.bo.shiftwidth = 2
+    vim.bo.softtabstop = 2
+    vim.bo.tabstop = 2
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'elixir' },
+  callback = function()
+    vim.bo.expandtab = true
+    vim.bo.shiftwidth = 2
+    vim.bo.softtabstop = 2
+    vim.bo.tabstop = 2
   end,
 })

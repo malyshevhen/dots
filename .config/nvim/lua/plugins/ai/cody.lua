@@ -22,4 +22,4 @@ M.keys = {
   { '<leader>ce', '<cmd>CodyExplain<cr>', desc = 'Cody Chat' },
 }
 
-return M
+return {}

@@ -1,8 +1,14 @@
-FPATH=~/.rbenv/completions:"$FPATH"
+ulimit -n 4096
+
+export FPATH=$HOME/.rbenv/completions:"$FPATH"
+export FPATH=$HOME/.local/share/zsh/asdf/completions:$FPATH
 
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/.rubies/ruby-3.3.4/bin:$PATH
 export PATH=$HOME/.local/share/gem/ruby/3.2.0/bin:$PATH
+
+# asdf
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 export OPENCV_LOG_LEVEL=ERROR
 
@@ -20,6 +26,9 @@ export GITLAB_VIM_URL='https://gitlab.kaaiot.net'
 export CODY_TOKEN=$(secret-tool lookup key cody_token)
 export GEMINI_API_KEY=$(secret-tool lookup key gemini_api_key)
 export GOOGLE_AI_API_KEY=$GEMINI_API_KEY
+
+# Neovim Logging
+export NVIM_LOG_FILE=$HOME/.local/state/nvim/log
 
 # -----------------------------------------------------
 # ZINIT SETTINGS
@@ -71,12 +80,12 @@ autoload -U compinit && compinit
 zinit cdreplay -q
 
 # Golang
-export GOROOT=$HOME/.local/go
-export GOPATH=$HOME/go
-export GOBIN=$HOME/.local/bin
-export PATH=$GOROOT/bin:$PATH
-export PATH=$GOPATH/bin:$PATH
-export PATH=$GOBIN:$PATH
+# export GOROOT=$HOME/.local/go
+# export GOPATH=$HOME/go
+# export GOBIN=$HOME/.local/bin
+# export PATH=$GOROOT/bin:$PATH
+# export PATH=$GOPATH/bin:$PATH
+# export PATH=$GOBIN:$PATH
 export PATH=/usr/lib/w3m:$PATH
 export GOPRIVATE=gitlab.kaaiot.net
 

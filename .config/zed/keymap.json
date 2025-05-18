@@ -88,7 +88,7 @@
       "space s w": "workspace::NewSearch",
       "space s g": "pane::DeploySearch",
       "space o": "tab_switcher::Toggle",
-      "space p": "outline::Toggle",
+      "space s s": "outline::Toggle",
       "g d": "editor::GoToDefinition",
       "space g d": "editor::GoToDefinitionSplit",
       "g D": "editor::GoToTypeDefinition",
@@ -96,15 +96,18 @@
       "g i": "editor::GoToImplementation",
       "space g i": "editor::GoToImplementationSplit",
       "g r": "editor::FindAllReferences",
-      "shift-k": "editor::Hover",
+      "shift-k": "editor::Hover"
+      // "space t t": "workspace::NewCenterTerminal"
       // "space t": "terminal_panel::ToggleFocus",
-      "space t t": "workspace::NewCenterTerminal",
-      "space a t": ["task::Spawn", { "task_name": "go:_add_json_tags" }],
-      "space r t": ["task::Spawn", { "task_name": "go:_remove_json_tags" }],
+      // "space a t": ["task::Spawn", { "task_name": "go:_add_json_tags" }],
+      // "space r t": ["task::Spawn", { "task_name": "go:_remove_json_tags" }],
       // "space j f": ["task::Spawn", { "task_name": "Java Google Format File" }],
-      "space t g": ["task::Spawn", { "task_name": "git:_lazy_git" }],
-      "space t c": ["task::Spawn", { "task_name": "git:_write_commit_message" }],
-      "space t p": ["task::Spawn", { "task_name": "posting" }]
+      // "space t g": ["task::Spawn", { "task_name": "git:_lazy_git" }],
+      // "space t c": [
+      //   "task::Spawn",
+      //   { "task_name": "git:_write_commit_message" }
+      // ],
+      // "space t p": ["task::Spawn", { "task_name": "posting" }]
     }
   },
   {

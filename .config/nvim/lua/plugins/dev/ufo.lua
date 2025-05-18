@@ -1,3 +1,4 @@
+-- WARN: Cause issue: to many files opened
 local M = { 'kevinhwang91/nvim-ufo' }
 
 M.dependencies = { 'kevinhwang91/promise-async' }

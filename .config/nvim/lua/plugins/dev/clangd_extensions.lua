@@ -59,4 +59,4 @@ M.config = function()
   require('clangd_extensions').setup(opts)
 end
 
-return M
+return {}

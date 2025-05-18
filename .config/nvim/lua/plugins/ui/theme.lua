@@ -1,4 +1,5 @@
 local M = {
+  none = {},
   vscode = { 'Mofiqul/vscode.nvim' },
   gruvbox = { 'ellisonleao/gruvbox.nvim' },
   pywal = { 'AlphaTechnolog/pywal.nvim' },
@@ -48,7 +49,7 @@ M.gruvbox.config = function()
     invert_tabline = false,
     invert_intend_guides = false,
     inverse = false, -- invert background for search, diffs, statuslines and errors
-    contrast = 'hard', -- can be "hard", "soft" or empty string
+    contrast = 'soft', -- can be "hard", "soft" or empty string
     overrides = {},
     dim_inactive = false,
     transparent_mode = false, -- transparent background for terminals

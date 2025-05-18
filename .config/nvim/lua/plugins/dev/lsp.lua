@@ -88,6 +88,9 @@ local servers = {
     },
   },
 
+  -- Elixir
+  -- ['elixirls'] = {},
+
   -- C, C++
   ['clangd'] = {
     settings = {
@@ -128,6 +131,7 @@ local servers = {
       },
     },
   },
+
   -- Python
   ['pyright'] = {
     settings = {
@@ -232,6 +236,7 @@ vim.list_extend(ensure_installed, {
   'shellcheck',
   'shfmt',
   'sleek',
+  'powershell_es',
 })
 
 M.config = function()
@@ -286,6 +291,9 @@ M.config = function()
 
   require('mason').setup()
   require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
+  require('lspconfig').gleam.setup {}
+
   require('mason-lspconfig').setup {
     handlers = {
       function(server_name)
@@ -333,6 +341,17 @@ M.config = function()
       nmmap('<leader>th', function()
         vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
       end, '[T]oggle Inlay [H]ints')
+    end
+
+    if client and client.name == 'gopls' and not client.server_capabilities.semanticTokensProvider then
+      local semantic = client.config.capabilities.textDocument.semanticTokens
+      if semantic then
+        client.server_capabilities.semanticTokensProvider = {
+          full = true,
+          legend = { tokenModifiers = semantic.tokenModifiers, tokenTypes = semantic.tokenTypes },
+          range = true,
+        }
+      end
     end
   end
 

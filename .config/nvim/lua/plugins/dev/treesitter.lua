@@ -24,11 +24,12 @@ M.opts = {
     'git_rebase',
     'gitignore',
     'gitattributes',
+    'zig',
   },
   auto_install = true,
   highlight = {
     enable = true,
-    additional_vim_regex_highlighting = { 'ruby' },
+    additional_vim_regex_highlighting = true,
   },
   indent = { enable = true, disable = { 'ruby' } },
 }

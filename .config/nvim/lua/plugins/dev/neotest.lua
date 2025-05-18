@@ -5,6 +5,7 @@ M.dependencies = {
   { 'folke/trouble.nvim' },
   { 'fredrikaverpil/neotest-golang', version = '*' },
   { 'lawrence-laz/neotest-zig' },
+  { 'jfpedroza/neotest-elixir' },
 }
 
 M.opts = {
@@ -14,6 +15,7 @@ M.opts = {
       dap_go_enabled = true,
     },
     ['neotest-zig'] = {},
+    ['neotest-elixir'] = {},
   },
   status = { virtual_text = true },
   output = { open_on_run = true },

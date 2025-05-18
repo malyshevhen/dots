@@ -42,6 +42,12 @@ M.version = false -- Never set this value to "*"! Never!
 
 M.opts = {
   provider = 'gemini',
+  gemini = {
+    -- @see https://ai.google.dev/gemini-api/docs/models/gemini
+    model = 'gemini-2.0-flash',
+    temperature = 0,
+    max_tokens = 4096,
+  },
 }
 -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
 M.build = 'make'
@@ -58,4 +64,4 @@ M.init = function()
   })
 end
 
-return M
+return {}

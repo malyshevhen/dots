@@ -1,6 +1,6 @@
 local M = { 'saecki/crates.nvim' }
 
-M.ft = { 'rust', 'toml' }
+M.event = { 'BufRead Cargo.toml' }
 
 M.config = function(_, opts)
   local crates = require 'crates'

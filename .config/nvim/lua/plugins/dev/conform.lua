@@ -19,7 +19,11 @@ M.config = function()
       -- Bash
       sh = { 'shfmt' },
       -- SQL
-      sql = { 'sleek' },
+      -- sql = { 'sleek' },
+      -- Gleam
+      gleam = { 'gleam format', lsp_format = 'fallback' },
+      -- Elixir
+      elixir = { 'mix format', lsp_format = 'fallback' },
     },
 
     format_on_save = {
