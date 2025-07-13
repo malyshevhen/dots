@@ -31,4 +31,4 @@ M.config = function()
   vim.api.nvim_set_hl(0, 'CmpItemKindSupermaven', { fg = '#6CC644' })
 end
 
-return M
+return {}

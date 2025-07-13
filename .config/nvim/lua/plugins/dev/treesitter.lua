@@ -25,6 +25,7 @@ M.opts = {
     'gitignore',
     'gitattributes',
     'zig',
+    'elixir',
   },
   auto_install = true,
   highlight = {

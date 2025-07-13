@@ -25,7 +25,9 @@ export GITLAB_VIM_URL='https://gitlab.kaaiot.net'
 # AI API secrets
 export CODY_TOKEN=$(secret-tool lookup key cody_token)
 export GEMINI_API_KEY=$(secret-tool lookup key gemini_api_key)
-export GOOGLE_AI_API_KEY=$GEMINI_API_KEY
+# export GOOGLE_AI_API_KEY=$GEMINI_API_KEY
+export GOOGLE_API_KEY=$GEMINI_API_KEY
+export GOOGLE_CLOUD_PROJECT=$(secret-tool lookup key google_cloud_project)
 
 # Neovim Logging
 export NVIM_LOG_FILE=$HOME/.local/state/nvim/log
@@ -82,7 +84,7 @@ zinit cdreplay -q
 # Golang
 # export GOROOT=$HOME/.local/go
 # export GOPATH=$HOME/go
-# export GOBIN=$HOME/.local/bin
+export GOBIN=$HOME/.local/bin
 # export PATH=$GOROOT/bin:$PATH
 # export PATH=$GOPATH/bin:$PATH
 # export PATH=$GOBIN:$PATH
@@ -234,3 +236,6 @@ export NVM_DIR="$HOME/.config/nvm"
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# opencode
+export PATH=/home/evhen/.opencode/bin:$PATH

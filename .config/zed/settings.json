@@ -7,14 +7,29 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "context_servers": {
+    "mcp-server-context7": {
+      "source": "extension",
+      "settings": {
+        "default_minimum_tokens": "30000"
+      }
+    }
+  },
   "icon_theme": "Bearded Icon Theme",
   "show_edit_predictions": true,
-  "assistant": {
-    "enable_experimental_live_diffs": true,
+  "edit_predictions": {
+    "mode": "eager"
+  },
+  "agent": {
+    "inline_assistant_model": {
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4"
+    },
     "default_model": {
       "provider": "zed.dev",
-      "model": "claude-3-7-sonnet-latest"
+      "model": "claude-sonnet-4"
     },
+    "default_profile": "write",
     "version": "2"
   },
   "features": {
@@ -25,14 +40,16 @@
     "gutter_debounce": 0,
     "inline_blame": {
       "enabled": true,
-      "delay_ms": 1,
-      "show_commit_summary": true
+      "delay_ms": 10,
+      "show_commit_summary": true,
+      "min_column": 100
     }
   },
   "vim_mode": true,
+  // "cursor_blink": false, // Bug. Code actions not working
   "vertical_scroll_margin": 10,
   "horizontal_scroll_margin": 5,
-  "theme": "Github Dark Dimmed",
+  "theme": "Serendipity Sunset - No Italics",
   "toolbar": {
     "breadcrumbs": true,
     "quick_actions": true,
@@ -49,60 +66,158 @@
     "button": "never"
   },
   "project_panel": {
+    "hide_gitignore": false,
     "indent_size": 10,
     "scrollbar": {
       "show": "never"
     }
   },
+  "diagnostics": {
+    "button": true,
+    "include_warnings": false,
+    "inline": {
+      "enabled": false,
+      "update_debounce_ms": 150,
+      "padding": 4,
+      "min_column": 0,
+      "max_severity": null
+    }
+  },
   "ui_font_family": "Monaspace Neon Var",
-  "buffer_font_family": "Liga SFMono Nerd Font",
+  "buffer_font_family": "Fira Code",
   "buffer_font_ligatures": true,
   "buffer_font_features": {
-    "calt": true,
-    "case": true,
-    "cpsp": true,
-    "dlig": true,
-    "frac": true,
-    "hist": true,
-    "kern": true,
-    "liga": true,
-    "lnum": true,
-    "onum": true,
-    "ordn": true,
-    "pnum": true,
+    // Ligatures and Contextual Alternates
+    //
+    // Automatically replaces specific glyphs with alternatives
+    // based on the surrounding characters to improve readability and create a more natural,
+    // hand-drawn look. For instance, it can prevent awkward character collisions.
+    "calt": false,
+    //
+    // Enables ligatures that are more decorative and a matter of stylistic choice,
+    // rather than being essential for readability.
+    // These are often used for historical or ornate effects.
+    "dlig": false,
+    //
+    // Automatically combines common character pairs, such as 'f' and 'i' (fi) or 'f' and 'l' (fl),
+    // into a single glyph to prevent collisions and improve the visual flow of the text.
+    "liga": false,
+    // Replaces modern letterforms with their historical counterparts, such as the long 's'.
+    // This is primarily used for setting text with a period-specific feel.
+    "hist": false,
+    //
+    // Case and Spacing
+    //
+    // Adjusts the position of punctuation and other symbols to better align with all-caps text or lining figures.
+    // For example, hyphens and parentheses will be raised to match the cap height.
+    "case": false,
+    // Adds a small amount of extra space between capital letters
+    // to improve their visual balance and readability when set in all caps.
+    "cpsp": false,
+    // Adjusts the spacing between specific pairs of characters to create a more visually even and pleasing appearance.
+    // For example, it reduces the space between 'A' and 'V'. XXXV
+    "kern": false,
+    // Numerals
+    //
+    // Also known as aligning or cap-height figures,
+    // these are numerals that are uniform in height and align with the baseline
+    // and cap height of the uppercase letters.
+    // They are suitable for use in tables and all-caps settings.
+    "lnum": false,
+    // These numerals have varying heights and alignments,
+    // with some parts extending above the x-height and below the baseline,
+    // similar to lowercase letters. They blend well with lowercase text,
+    // creating a more traditional and elegant look.
+    "onum": false,
+    // Each numeral has a different width based on its shape (e.g., '1' is narrower than '8').
+    // This creates a more balanced and evenly spaced appearance for numbers within running text. 1234567890
+    "pnum": false,
+    // All numerals have the same width, allowing them to align vertically in columns.
+    // This is ideal for tables, price lists, and financial reports.
     "tnum": true,
-    "swsh": true,
-    "subs": true,
-    "sups": true,
-    "tnum": true,
-    "ss01": true,
-    "ss02": true,
-    "ss03": true,
-    "ss04": true,
-    "ss05": true,
-    "ss06": true,
-    "ss07": true,
-    "ss08": true,
-    "ss09": true,
-    "ss10": true,
-    "ss11": true,
-    "ss12": true,
-    "ss13": true,
-    "ss14": true,
-    "ss15": true,
-    "ss16": true,
-    "ss17": true,
-    "ss18": true,
-    "ss19": true,
-    "ss20": true,
-    "zero": true
+    // Replaces letter combinations like '1st' and '2nd' with superior letters,
+    // creating proper ordinal indicators.
+    // Check: 1o (if 'o' has underline - gliff works)
+    "ordn": false,
+    // Converts numbers separated by a slash (e.g., 1/2) into true, pre-composed fraction glyphs.
+    // Do not turn on!)
+    "frac": false,
+    // Subscripts, Superscripts, and Swashes
+    //
+    // Enables more flamboyant and decorative versions of characters,
+    // often with exaggerated serifs or flourishes.
+    "swsh": false,
+    // Replaces characters with their subscript equivalents,
+    // which are smaller and positioned below the baseline.
+    // Do not turn on!)
+    "subs": false,
+    // Replaces characters with their superscript equivalents,
+    // which are smaller and positioned above the cap height.
+    // Do not turn on!)
+    "sups": false,
+    // Stylistic Sets (from FiraCode docs)
+    //
+    "ss01": false, // r rr
+    "ss02": false, // (a >= b) || (a <= b) && (a == b) || (a != b)
+    "ss03": false, // & && &&&
+    "ss04": false, // $ $$ $$$
+    "ss05": false, // @ @@ @@@
+    "ss06": false, // \ \\ \\\
+    "ss07": false, // =~ !~
+    "ss08": false, // == === !==
+    "ss09": false, // <<= =>> >>= =<< |= ||=
+    "ss10": false, // Tl Fl fi fj fl ft
+    "ss11": false,
+    "ss12": false,
+    "ss13": false,
+    "ss14": false,
+    "ss15": false,
+    "ss16": false,
+    "ss17": false,
+    "ss18": false,
+    "ss19": false,
+    "ss20": false,
+    // Change variant of '0' character.
+    "zero": false, // 0,
+    "cv1": false, // a
+    "cv2": false, // g
+    "cv3": false, // i
+    "cv4": false, // i
+    "cv5": false, // i
+    "cv6": false, // i
+    "cv7": false, // l
+    "cv8": false, // l
+    "cv9": false, // l
+    "cv10": false, // l
+    "cv11": false, // 0
+    "cv12": false, // 0
+    "cv13": false, // 0
+    "cv14": true, // 3
+    "cv15": false, // *
+    "cv16": true, // *
+    "cv17": false, // ~
+    "cv18": false, // %
+    "cv19": false, // <=
+    "cv20": false, // <=
+    "cv21": false, // =<
+    "cv22": false, // =<
+    "cv23": false, // >=
+    "cv24": false, // /=
+    "cv25": false, // .-
+    "cv26": false, // :-
+    "cv27": false, // []
+    "cv28": false, // {. .}
+    "cv29": false, // {}
+    "cv30": false, // |
+    "cv31": false, // ()
+    "cv32": false // .=
+    // Test: <> <+> <| |>
   },
   "buffer_font_size": 16,
   "buffer_line_height": {
-    "custom": 1.5
+    "custom": 1.4
   },
   "buffer_font_weight": 350,
-  "cursor_blink": false,
   "relative_line_numbers": true,
   "terminal": {
     "font_family": "SFMono Nerd Font Mono",
@@ -112,20 +227,37 @@
     }
   },
   "inlay_hints": {
-    "enabled": true
+    "enabled": false
   },
   "indent_guides": {
     "enabled": true,
-    "coloring": "indent_aware"
+    "coloring": "indent_aware",
+    "active_line_width": 2,
+    "line_width": 1
   },
   "tab_bar": {
-    "show_nav_history_buttons": false
+    "show_nav_history_buttons": false,
+    "show": true,
+    "show_tab_bar_buttons": true
   },
-  "centered_layout": {
-    "left_padding": 0.15,
-    "right_padding": 0.15
+  // "centered_layout": {
+  //   "left_padding": 0.15,
+  //   "right_padding": 0.15
+  // },
+  "title_bar": {
+    "show_sign_in": true,
+    "show_onboarding_banner": false,
+    "show_user_picture": false
   },
   "file_types": {
+    "Helm": [
+      "**/templates/**/*.tpl",
+      "**/templates/**/*.yaml",
+      "**/templates/**/*.yml",
+      "**/helmfile.d/**/*.yaml",
+      "**/helmfile.d/**/*.yml",
+      "**/values*.yaml"
+    ],
     "Ansible": [
       "**.ansible.yml",
       "**/defaults/**.yml",
@@ -142,7 +274,9 @@
       "**playbook*.yaml",
       "**playbook*.yml"
     ],
-    "Cucumber": ["feature"]
+    "Cucumber": ["**/*.feature"],
+    "RAML": ["*.raml"],
+    "CQL": ["*.cql"]
   },
   "format_on_save": "on",
   "languages": {
@@ -152,8 +286,36 @@
     "Go": {
       "show_edit_predictions": true
     },
+    "Elixir": {
+      "language_servers": ["!next-ls", "elixir-ls", "!lexical", "..."],
+      "format_on_save": {
+        "external": {
+          "command": "mix",
+          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"]
+        }
+      }
+    },
     "Lua": {
-      "show_edit_predictions": false
+      "show_edit_predictions": false,
+      "format_on_save": "on",
+      "formatter": {
+        "external": {
+          "command": "stylua",
+          "arguments": [
+            "--syntax=Lua54",
+            "--respect-ignores",
+            "--stdin-filepath",
+            "{buffer_path}",
+            "-"
+          ]
+        }
+      },
+      "inlay_hints": {
+        "enabled": true,
+        "show_type_hints": true,
+        "show_parameter_hints": true,
+        "show_other_hints": true
+      }
     },
     "Cypher": {
       "show_edit_predictions": false
@@ -162,15 +324,132 @@
       "show_edit_predictions": false
     },
     "Java": {
+      "format_on_save": "off",
       "formatter": {
         "external": {
           "command": "google-java-format",
           "arguments": ["-"]
         }
       }
+    },
+    "Python": {
+      "language_servers": [
+        "basedpyright",
+        "ruff",
+        "!pyright",
+        "!ty",
+        "!pylsp",
+        "..."
+      ],
+      "format_on_save": "on",
+      "formatter": [
+        {
+          "code_actions": {
+            // Fix all auto-fixable lint violations
+            "source.fixAll.ruff": true,
+            // Organize imports
+            "source.organizeImports.ruff": true
+          }
+        }
+      ]
+    },
+    "RAML": {
+      "language_servers": ["als", "..."]
+    },
+    "CQL": {
+      "language_servers": ["cql_ls", "..."]
     }
   },
   "lsp": {
+    "pylsp": {
+      "settings": {
+        "plugins": {
+          "autopep8": { "enabled": true },
+          "black": { "enabled": true },
+          "flake8": { "enabled": true },
+          "isort": { "enabled": true },
+          "mccabe": { "enabled": true },
+          "pycodestyle": { "enabled": true },
+          "pydocstyle": { "enabled": true },
+          "pyflakes": { "enabled": true },
+          "pylint": { "enabled": true },
+          "yapf": { "enabled": true },
+
+          "pylsp_mypy": { "enabled": true },
+          "jedi": { "enabled": true },
+          "rope": { "enabled": true },
+          "rope_autoimport": { "enabled": true },
+          "rope_completion": { "enabled": true },
+
+          "ruff": { "enabled": true }
+        }
+      }
+    },
+    "pyright": {
+      "settings": {
+        "python.analysis": {
+          "diagnosticMode": "workspace",
+          "typeCheckingMode": "strict"
+        }
+      }
+    },
+    "basedpyright": {
+      "binary": {
+        "path": "/home/evhen/.local/bin/basedpyright-langserver",
+        "arguments": ["--stdio"]
+      },
+      "settings": {
+        "python": {
+          "pythonPath": ".venv/bin/python"
+        },
+        "basedpyright.analysis": {
+          "diagnosticMode": "workspace",
+          "inlayHints": {
+            "callArgumentNames": false
+          }
+        }
+      }
+    },
+    "ty": {
+      "binary": {
+        "path": "/home/evhen/.local/bin/ty",
+        "arguments": ["server"]
+      }
+    },
+    "ruff": {
+      "initialization_options": {
+        "settings": {
+          "configurationPreference": "filesystemFirst",
+          "configuration": {
+            "format": {
+              "quote-style": "double",
+              "skip-magic-trailing-comma": false
+            }
+          },
+          "codeAction": {
+            "disableRuleComment": { "enable": false },
+            "fixViolation": { "enable": true }
+          },
+          "lint": {
+            "select": ["E4", "E7", "E9", "F"],
+            "extendSelect": ["E", "F", "I"],
+            "enable": true
+          },
+          "format": {
+            "preview": true
+          },
+          "fixAll": true,
+          "organizeImports": true,
+          "showSyntaxErrors": true,
+          "lineLength": 100
+        }
+      }
+    },
+    "als": {
+      "binary": {
+        "path": "/home/evhen/Documents/temp/als/als-server/jvm/target/scala-2.12/als"
+      }
+    },
     "ansible-language-server": {
       "settings": {
         "ansible": {
@@ -227,6 +506,80 @@
         }
       }
     },
-    "cypher": {}
+    "cypher": {},
+    "jdtls": {
+      "settings": {
+        "java": {
+          "errors": {
+            "incompleteClasspath": {
+              "severity": "warning"
+            }
+          },
+          "configuration": {
+            "updateBuildConfiguration": "interactive",
+            "maven": {
+              "userSettings": null
+            }
+          },
+          "trace": {
+            "server": "verbose"
+          },
+          "import": {
+            "gradle": {
+              "enabled": true
+            },
+            "maven": {
+              "enabled": false
+            },
+            "exclusions": [
+              "**/node_modules/**",
+              "**/.metadata/**",
+              "**/archetype-resources/**",
+              "**/META-INF/maven/**",
+              "/**/test/**"
+            ]
+          },
+          "jdt": {
+            "ls": {
+              "lombokSupport": {
+                "enabled": true
+              }
+            }
+          },
+          "referencesCodeLens": {
+            "enabled": true
+          },
+          "signatureHelp": {
+            "enabled": true
+          },
+          "implementationsCodeLens": {
+            "enabled": true
+          },
+          "format": {
+            "enabled": false
+          },
+          "saveActions": {
+            "organizeImports": false
+          },
+          "contentProvider": {
+            "preferred": null
+          },
+          "autobuild": {
+            "enabled": false
+          },
+          "completion": {
+            "favoriteStaticMembers": [
+              "org.junit.Assert.*",
+              "org.junit.Assume.*",
+              "org.junit.jupiter.api.Assertions.*",
+              "org.junit.jupiter.api.Assumptions.*",
+              "org.junit.jupiter.api.DynamicContainer.*",
+              "org.junit.jupiter.api.DynamicTest.*"
+            ],
+            "importOrder": ["java", "javax", "com", "org"]
+          }
+        }
+      }
+    }
   }
 }

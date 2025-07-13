@@ -6,6 +6,7 @@ M.dependencies = {
   { 'fredrikaverpil/neotest-golang', version = '*' },
   { 'lawrence-laz/neotest-zig' },
   { 'jfpedroza/neotest-elixir' },
+  { 'nvim-neotest/neotest-python' },
 }
 
 M.opts = {
@@ -16,6 +17,7 @@ M.opts = {
     },
     ['neotest-zig'] = {},
     ['neotest-elixir'] = {},
+    ['neotest-python'] = {},
   },
   status = { virtual_text = true },
   output = { open_on_run = true },

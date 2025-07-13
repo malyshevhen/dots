@@ -8,7 +8,6 @@ M.dependencies = {
   { 'onsails/lspkind.nvim' },
 }
 
-local util = require 'lspconfig.util'
 local path = vim.fn.stdpath 'config' .. '/spell/en.utf-8.add'
 local words = {}
 for word in io.open(path, 'r'):lines() do
@@ -91,56 +90,23 @@ local servers = {
   -- Elixir
   -- ['elixirls'] = {},
 
-  -- C, C++
-  ['clangd'] = {
-    settings = {
-      clangd = {
-        keys = {
-          { '<leader>ch', '<cmd>ClangdSwitchSourceHeader<cr>', desc = 'Switch Source/Header (C/C++)' },
-        },
-        root_dir = function(fname)
-          return require('lspconfig.util').root_pattern(
-            'Makefile',
-            'configure.ac',
-            'configure.in',
-            'config.h.in',
-            'meson.build',
-            'meson_options.txt',
-            'build.ninja'
-          )(fname) or require('lspconfig.util').root_pattern('compile_commands.json', 'compile_flags.txt')(fname) or require('lspconfig.util').find_git_ancestor(
-            fname
-          )
-        end,
-        capabilities = {
-          offsetEncoding = { 'utf-16' },
-        },
-        cmd = {
-          'clangd',
-          '--background-index',
-          '--clang-tidy',
-          '--header-insertion=iwyu',
-          '--completion-style=detailed',
-          '--function-arg-placeholders',
-          '--fallback-style=llvm',
-        },
-        init_options = {
-          usePlaceholders = true,
-          completeUnimported = true,
-          clangdFileStatus = true,
-        },
-      },
-    },
-  },
-
   -- Python
   ['pyright'] = {
     settings = {
       python = {
         analysis = {
-          autoSearchPaths = true,
-          diagnosticPublishDelay = 100,
+          ignore = { '*' },
         },
       },
+      pyright = {
+        -- Using Ruff's import organizer
+        disableOrganizeImports = true,
+      },
+    },
+  },
+  ['ruff'] = {
+    settings = {
+      logLevel = 'debug',
     },
   },
 
@@ -197,13 +163,6 @@ local servers = {
     },
   },
 
-  -- Docker
-  ['dockerls'] = {},
-  ['docker_compose_language_service'] = {
-    filetypes = { 'yaml.docker-compose' },
-    root_dir = util.root_pattern('docker-compose.yaml', 'docker-compose.yml', 'compose.yaml', 'compose.yml'),
-  },
-
   -- Markdown
   ['marksman'] = {},
 
@@ -236,7 +195,6 @@ vim.list_extend(ensure_installed, {
   'shellcheck',
   'shfmt',
   'sleek',
-  'powershell_es',
 })
 
 M.config = function()
@@ -290,6 +248,7 @@ M.config = function()
   capabilities = vim.tbl_deep_extend('force', capabilities, require('blink.cmp').get_lsp_capabilities())
 
   require('mason').setup()
+
   require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
   require('lspconfig').gleam.setup {}
@@ -304,6 +263,27 @@ M.config = function()
       end,
     },
   }
+  --
+  -- local lspconfig = require 'lspconfig'
+  -- local configs = require 'lspconfig.configs'
+  --
+  -- -- Register ALS as a custom server, if not already present
+  -- configs.als = {
+  --   default_config = {
+  --     cmd = { 'java', '-jar', '/home/evhen/Documents/temp/als/als-server/jvm/target/scala-2.12/als-server.jar', '--systemStream' },
+  --     filetypes = { 'raml' },
+  --     root_dir = lspconfig.util.root_pattern('.git', '.'),
+  --     settings = {
+  --       als = {
+  --         log_debug = false,
+  --       },
+  --     },
+  --   },
+  -- }
+  --
+  -- local als_opts = servers['als'] or {}
+  -- als_opts.capabilities = vim.tbl_deep_extend('force', capabilities, als_opts.capabilities or {})
+  -- lspconfig.als.setup(als_opts)
 
   local auto_cmd_group = vim.api.nvim_create_augroup('Lsp-attach', { clear = true })
 
@@ -352,6 +332,10 @@ M.config = function()
           range = true,
         }
       end
+    end
+
+    if client and client.name == 'ruff' then
+      client.server_capabilities.hoverProvider = false
     end
   end
 

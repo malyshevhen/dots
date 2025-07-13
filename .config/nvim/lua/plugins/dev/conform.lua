@@ -7,8 +7,6 @@ M.config = function()
     formatters_by_ft = {
       lua = { 'stylua', lsp_format = 'last' },
       -- Conform will run multiple formatters sequentially
-      python = { 'isort', 'black' },
-      -- You can customize some of the format options for the filetype (:help conform.format)
       rust = { 'rustfmt', lsp_format = 'fallback' },
       -- Conform will run the first available formatter
       javascript = { 'prettierd', 'prettier', stop_after_first = true },
@@ -24,6 +22,8 @@ M.config = function()
       gleam = { 'gleam format', lsp_format = 'fallback' },
       -- Elixir
       elixir = { 'mix format', lsp_format = 'fallback' },
+      -- Python
+      python = { 'ruff_format', 'ruff_fix', 'ruff_imports', lsp_format = 'fallback' },
     },
 
     format_on_save = {

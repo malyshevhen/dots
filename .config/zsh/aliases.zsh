@@ -43,3 +43,15 @@ alias cd='z'
 
 alias wifi-rescan='nmcli dev wifi list --rescan yes'
 
+# -----------------------------------------------------
+# TERMINAL
+# -----------------------------------------------------
+
+alias open='xdg-open'
+
+# -----------------------------------------------------
+# PODMAN
+# -----------------------------------------------------
+
+alias kube='podman kube'
+alias pod='podman pod'

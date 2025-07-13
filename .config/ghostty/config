@@ -1,17 +1,21 @@
-theme = GitHub Dark
+theme = Kanagawa Wave
 
 font-size = 12
-font-family = "Liga SFMono Nerd Font"
+font-family = "FiraCode Nerd Font"
+adjust-cell-height=1
 
 cursor-style = block
 cursor-style-blink = false
-# cursor-opacity = 0.80
+cursor-opacity = 0.80
 
 # background=black
-# background-opacity=0.75
-# background-blur=true
+background-opacity=0.9
+background-blur=true
 
 shell-integration-features = no-cursor
+
+window-decoration=none
+# fullscreen=true
 
 # gtk-titlebar=true
 # custom-shader = shaders/animated-gradient-shader.glsl
