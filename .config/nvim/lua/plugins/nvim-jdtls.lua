@@ -33,6 +33,51 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
           return workspace_dir
         end
 
+        -- Function to get Lombok jar path
+        local function get_lombok_jar()
+          -- First try the specific version mentioned
+          local specific_lombok = vim.fn.expand '$HOME/.m2/repository/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar'
+          if vim.fn.filereadable(specific_lombok) == 1 then
+            return specific_lombok
+          end
+
+          -- Try to find any Lombok version in the repository
+          local lombok_dir = vim.fn.expand '$HOME/.m2/repository/org/projectlombok/lombok'
+          if vim.fn.isdirectory(lombok_dir) == 1 then
+            local versions = vim.fn.glob(lombok_dir .. '/*/lombok-*.jar', false, true)
+
+            -- Sort versions and take the latest one
+            if #versions > 0 then
+              table.sort(versions, function(a, b)
+                -- Extract version numbers and compare
+                local version_a = string.match(a, 'lombok%-([%d%.]+)%.jar')
+                local version_b = string.match(b, 'lombok%-([%d%.]+)%.jar')
+                if version_a and version_b then
+                  return version_a > version_b
+                end
+                return a > b
+              end)
+              return versions[1]
+            end
+          end
+
+          -- Fallback: check common locations
+          local fallback_paths = {
+            vim.fn.expand '$HOME/.m2/repository/org/projectlombok/lombok/1.18.32/lombok-1.18.32.jar',
+            vim.fn.expand '$HOME/.m2/repository/org/projectlombok/lombok/1.18.28/lombok-1.18.28.jar',
+            vim.fn.expand '$HOME/.local/share/lombok/lombok.jar',
+            '/opt/lombok/lombok.jar',
+          }
+
+          for _, path in ipairs(fallback_paths) do
+            if vim.fn.filereadable(path) == 1 then
+              return path
+            end
+          end
+
+          return nil
+        end
+
         -- Find root directory
         local root_dir = require('jdtls.setup').find_root { '.git', 'mvnw', 'gradlew', 'pom.xml', 'build.gradle' }
 
@@ -45,7 +90,19 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
           -- Ensure workspace directory exists
           local workspace = get_workspace_dir()
           vim.fn.mkdir(workspace, 'p')
+
+          -- Build command with Lombok support if available
           cmd = { 'jdtls', '-data', workspace }
+
+          -- Add Lombok javaagent if available
+          local lombok_jar = get_lombok_jar()
+          if lombok_jar then
+            table.insert(cmd, '--jvm-arg=-javaagent:' .. lombok_jar)
+            local version = string.match(lombok_jar, 'lombok%-([%d%.]+)%.jar') or 'unknown'
+            vim.notify('Lombok integration enabled (version: ' .. version .. ')', vim.log.levels.INFO)
+          else
+            vim.notify('Lombok jar not found. Install with: mvn dependency:get -Dartifact=org.projectlombok:lombok:1.18.30', vim.log.levels.WARN)
+          end
         else
           vim.notify('JDTLS not found. Please install eclipse.jdt.ls', vim.log.levels.ERROR)
           return
@@ -58,12 +115,32 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
           settings = {
             java = {
               eclipse = { downloadSources = true },
-              configuration = { updateBuildConfiguration = 'interactive' },
+              configuration = {
+                updateBuildConfiguration = 'interactive',
+                runtimes = {},
+                -- Enable Lombok annotation processing
+                workspaceFolder = workspace,
+              },
               maven = { downloadSources = true },
               implementationsCodeLens = { enabled = true },
               referencesCodeLens = { enabled = true },
               references = { includeDecompiledSources = true },
               format = { enabled = true },
+              -- Lombok-specific settings
+              compile = {
+                nullAnalysis = {
+                  mode = 'automatic',
+                },
+              },
+              contentProvider = {
+                preferred = 'fernflower',
+              },
+              sources = {
+                organizeImports = {
+                  starThreshold = 9999,
+                  staticStarThreshold = 9999,
+                },
+              },
             },
             signatureHelp = { enabled = true },
             completion = {
@@ -75,8 +152,18 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
                 'java.util.Objects.requireNonNull',
                 'java.util.Objects.requireNonNullElse',
                 'org.mockito.Mockito.*',
+                -- Add Lombok static imports
+                'lombok.AccessLevel.*',
+                'lombok.experimental.FieldDefaults.*',
               },
               importOrder = { 'java', 'javax', 'com', 'org' },
+              filteredTypes = {
+                -- Hide Lombok generated classes from completion
+                'com.sun.*',
+                'sun.*',
+                'jdk.internal.*',
+                'io.micrometer.shaded.*',
+              },
             },
           },
           init_options = {
@@ -100,5 +187,34 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
     { map = '<leader>crm', cmd = function() require('jdtls').extract_method(true) end,     desc = 'Extract Method',       ft = 'java', mode = 'v' },
     { map = '<leader>df',  cmd = function() require('jdtls').test_class() end,             desc = 'Test Class',           ft = 'java' },
     { map = '<leader>dn',  cmd = function() require('jdtls').test_nearest_method() end,    desc = 'Test Nearest Method',  ft = 'java' },
+
+    -- Lombok-specific keymaps
+    { map = '<leader>cl',  cmd = '',                                                        desc = '+lombok',              ft = 'java' },
+    { map = '<leader>cld', cmd = function()
+        local current_file = vim.fn.expand('%:p')
+        local cmd = 'java -jar ' .. vim.fn.expand('$HOME/.m2/repository/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar') .. ' delombok ' .. current_file
+        vim.fn.system(cmd)
+        vim.notify('Delombok completed for ' .. vim.fn.expand('%:t'), vim.log.levels.INFO)
+      end,                                                                                desc = 'Delombok Current File', ft = 'java' },
+    { map = '<leader>clr', cmd = function()
+        vim.lsp.buf.code_action({
+          filter = function(action)
+            return string.match(action.title or '', 'lombok') or string.match(action.title or '', 'Lombok')
+          end,
+          apply = true,
+        })
+      end,                                                                                desc = 'Lombok Refactor',     ft = 'java' },
+    { map = '<leader>clg', cmd = function()
+        -- Generate getters/setters using LSP code actions
+        vim.lsp.buf.code_action({
+          filter = function(action)
+            local title = action.title or ''
+            return string.match(title, 'Generate getter') or
+                   string.match(title, 'Generate setter') or
+                   string.match(title, 'Generate constructor')
+          end,
+          apply = true,
+        })
+      end,                                                                                desc = 'Generate Methods',     ft = 'java' },
   },
 })
