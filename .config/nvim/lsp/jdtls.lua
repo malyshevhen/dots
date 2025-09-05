@@ -38,6 +38,7 @@ local env = {
   HOME = vim.uv.os_homedir(),
   XDG_CACHE_HOME = os.getenv 'XDG_CACHE_HOME',
   JDTLS_JVM_ARGS = os.getenv 'JDTLS_JVM_ARGS',
+  LOMBOK_JAR = vim.fn.expand '$HOME/.m2/repository/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar',
 }
 
 local function get_cache_dir()
@@ -54,15 +55,6 @@ end
 
 local function get_jdtls_workspace_dir()
   return get_jdtls_cache_dir() .. '/workspace'
-end
-
-local function get_jdtls_jvm_args()
-  local args = {}
-  for a in string.gmatch((env.JDTLS_JVM_ARGS or ''), '%S+') do
-    local arg = string.format('--jvm-arg=%s', a)
-    table.insert(args, arg)
-  end
-  return unpack(args)
 end
 
 -- TextDocument version is reported as 0, override with nil so that
@@ -109,16 +101,28 @@ local function on_language_status(_, result)
   command 'echohl None'
 end
 
+local cmd = {
+  'jdtls',
+  '-configuration',
+  get_jdtls_config_dir(),
+  '-data',
+  get_jdtls_workspace_dir(),
+  '--jvm-arg=-Declipse.application=org.eclipse.jdt.ls.core.id1',
+  '--jvm-arg=-Dosgi.bundles.defaultStartLevel=4',
+  '--jvm-arg=-Declipse.product=org.eclipse.jdt.ls.core.product',
+  '--jvm-arg=-Dlog.protocol=true',
+  '--jvm-arg=-Dlog.level=ALL',
+  '--jvm-arg=-Xms1g',
+  ('--jvm-arg=-javaagent:%s'):format(env.LOMBOK_JAR),
+  ('--jvm-arg=-Xbootclasspath/a:%s'):format(env.LOMBOK_JAR),
+}
+
+-- Uncomment to debug the command
+-- print(vim.inspect(cmd))
+
 ---@type vim.lsp.Config
 return {
-  cmd = {
-    'jdtls',
-    '-configuration',
-    get_jdtls_config_dir(),
-    '-data',
-    get_jdtls_workspace_dir(),
-    get_jdtls_jvm_args(),
-  },
+  cmd = cmd,
   filetypes = { 'java' },
   root_markers = {
     -- Multi-module projects
@@ -135,6 +139,17 @@ return {
     workspace = get_jdtls_workspace_dir(),
     jvm_args = {},
     os_config = nil,
+  },
+  settings = {
+    java = {
+      format = {
+        enabled = true,
+        settings = {
+          url = 'https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xm',
+          profile = 'GoogleStyle',
+        },
+      },
+    },
   },
   handlers = {
     -- Due to an invalid protocol implementation in the jdtls we have to conform these to be spec compliant.

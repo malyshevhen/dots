@@ -32,4 +32,8 @@ return {
   filetypes = { 'python' },
   root_markers = { 'pyproject.toml', 'ruff.toml', '.ruff.toml', '.git' },
   settings = {},
+  on_init = function(client)
+    -- Disable hover in favor of Basepyright
+    client.server_capabilities.hoverProvider = false
+  end,
 }
