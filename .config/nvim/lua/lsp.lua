@@ -3,7 +3,6 @@ vim.lsp.enable {
   'basedpyright',
   'ruff',
   'gopls',
-  'jdtls',
   'jsonls',
   'yamlls',
   'taplo',

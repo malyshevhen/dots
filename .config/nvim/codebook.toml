@@ -12,6 +12,7 @@ words = [
     "goimports",
     "gomod",
     "gosum",
+    "jdtls",
     "keymap",
     "keymaps",
     "lspkind",
