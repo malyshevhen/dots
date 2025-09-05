@@ -4,6 +4,7 @@
 
 -- Ensure vim global is available
 vim = vim
+Snacks = Snacks
 
 ---@alias KeymapMode
 ---| "n" # normal
@@ -12,6 +13,7 @@ vim = vim
 ---| "x" # visual block
 ---| "t" # terminal
 ---| "o" # operator-pending
+---| "s" #
 
 ---@class Keymap
 ---@field map string The key combination to map

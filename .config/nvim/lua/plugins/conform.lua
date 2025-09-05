@@ -1,5 +1,3 @@
-local Plug = require('types').Plug
-
 return Plug.new('https://github.com/stevearc/conform.nvim', 'conform', {
   opts = {
     formatters_by_ft = {
@@ -35,6 +33,7 @@ return Plug.new('https://github.com/stevearc/conform.nvim', 'conform', {
       lsp_format = 'fallback',
     },
   },
+
   config = function(opts)
     require('conform').setup(opts)
 
@@ -50,22 +49,10 @@ return Plug.new('https://github.com/stevearc/conform.nvim', 'conform', {
       end,
     })
   end,
+
+  -- stylua: ignore
   keymaps = {
-    {
-      map = '<leader>cf',
-      cmd = function()
-        require('conform').format()
-      end,
-      desc = 'Code (Conform) format',
-      mode = { 'n', 'v', 'x' },
-    },
-    {
-      map = '<leader>cF',
-      cmd = function()
-        require('conform').format { async = true }
-      end,
-      desc = 'Format async',
-      mode = { 'n', 'v', 'x' },
-    },
+    { map = '<leader>cf', cmd = function() require('conform').format() end,                desc = 'Code (Conform) format', mode = { 'n', 'v', 'x' }, },
+    { map = '<leader>cF', cmd = function() require('conform').format { async = true } end, desc = 'Format async',          mode = { 'n', 'v', 'x' }, },
   },
 })

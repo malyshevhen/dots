@@ -1,5 +1,3 @@
-local Plug = require('types').Plug
-
 return Plug.new('https://github.com/echasnovski/mini.nvim', 'mini.nvim', {
   config = function()
     local mini_modules = {

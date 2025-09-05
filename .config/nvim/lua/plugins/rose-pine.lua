@@ -1,5 +1,3 @@
-local Plug = require('types').Plug
-
 return Plug.new('https://github.com/rose-pine/neovim', 'rose-pine', {
   opts = {
     variant = 'auto',
@@ -12,6 +10,7 @@ return Plug.new('https://github.com/rose-pine/neovim', 'rose-pine', {
       transparency = false,
     },
   },
+
   config = function()
     vim.cmd.colorscheme 'rose-pine'
   end,
