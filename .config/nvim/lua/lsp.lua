@@ -10,6 +10,7 @@ vim.lsp.enable {
   'shellcheck',
   'jdtls',
   'dockerls',
+  'gleam',
 }
 
 vim.api.nvim_create_autocmd('LspAttach', {

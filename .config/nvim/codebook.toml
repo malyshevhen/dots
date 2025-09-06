@@ -1,6 +1,8 @@
 words = [
     "autopairs",
     "bufnr",
+    "buildmode",
+    "cgo",
     "cterm",
     "diffview",
     "elixirls",

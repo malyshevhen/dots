@@ -1,3 +1,5 @@
+local log = require 'utils.vim_logger'
+
 -- Set global variables to simplify plugin files
 _G.Plug = require('types').Plug
 _G.Keymap = require('types').Keymap
@@ -12,7 +14,7 @@ local function load_plugins()
 
   -- Check if plugins directory exists
   if vim.fn.isdirectory(plugins_dir) == 0 then
-    vim.notify('Plugins directory not found: ' .. plugins_dir, vim.log.levels.ERROR)
+    log.error('Plugins directory not found: ' .. plugins_dir)
     return {}
   end
 
@@ -30,10 +32,10 @@ local function load_plugins()
         if type(plugin) == 'table' and plugin.url and plugin.name then
           table.insert(plugins, plugin)
         else
-          vim.notify(string.format('Invalid plugin configuration in %s.lua', filename), vim.log.levels.WARN)
+          log.warn_fmt('Invalid plugin configuration in %s.lua', filename)
         end
       else
-        vim.notify(string.format('Failed to load plugin: %s.lua - %s', filename, tostring(plugin)), vim.log.levels.ERROR)
+        log.error_fmt('Failed to load plugin: %s.lua - %s', filename, tostring(plugin))
       end
     end
   end
@@ -42,6 +44,7 @@ local function load_plugins()
 end
 
 -- Load all plugins
+---@type Plug[]
 local plugins = load_plugins()
 
 -- Global keymaps (not plugin-specific)
@@ -68,12 +71,14 @@ local global_keymaps = {
 -- Install all plugins
 local install_success = Plug.installAll(plugins)
 if not install_success then
-  vim.notify('Plugin installation failed', vim.log.levels.ERROR)
+  log.error 'Plugin installation failed'
   return
 end
 
 -- Setup all plugins and collect keymaps
+---@type Keymap[]
 local all_keymaps = vim.deepcopy(global_keymaps)
+---@type {name: string, error: string}[]
 local setup_failures = {}
 
 for _, plugin in ipairs(plugins) do
@@ -86,7 +91,7 @@ for _, plugin in ipairs(plugins) do
       name = plugin.name or 'Unknown',
       error = result,
     })
-    vim.notify(string.format('Failed to setup plugin: %s\n%s', plugin.name or 'Unknown', tostring(result)), vim.log.levels.ERROR)
+    log.error_fmt('Failed to setup plugin: %s\n%s', plugin.name or 'Unknown', tostring(result))
   elseif not result then
     table.insert(setup_failures, {
       name = plugin.name or 'Unknown',
@@ -106,9 +111,9 @@ if #setup_failures > 0 then
   for _, failure in ipairs(setup_failures) do
     table.insert(failure_names, failure.name)
   end
-  vim.notify(string.format('Plugin setup completed with %d failure(s): %s', #setup_failures, table.concat(failure_names, ', ')), vim.log.levels.WARN)
+  log.warn_fmt('Plugin setup completed with %d failure(s): %s', #setup_failures, table.concat(failure_names, ', '))
 else
-  vim.notify(string.format('All %d plugins setup successfully', #plugins), vim.log.levels.INFO)
+  log.info_fmt('All %d plugins setup successfully', #plugins)
 end
 
 -- Check for keymap conflicts and setup all keymaps
@@ -149,7 +154,7 @@ function M.reload()
   package.loaded['plugins'] = nil
   require 'plugins'
 
-  vim.notify('Plugins reloaded', vim.log.levels.INFO)
+  log.info 'Plugins reloaded'
 end
 
 --- Get plugin statistics
