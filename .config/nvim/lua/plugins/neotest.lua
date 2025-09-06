@@ -201,7 +201,21 @@ return Plug.new('https://github.com/nvim-neotest/neotest', 'neotest', {
       {
         name = 'neotest-elixir',
         executable = 'mix',
-        config = {},
+        config = {
+          -- Environment configuration to prevent output parsing issues
+          env = {
+            MIX_ENV = 'test',
+            NO_COLOR = '1',
+          },
+          -- Use minimal args focused on reliable output
+          args = {
+            '--formatter',
+            'ExUnit.CLIFormatter',
+            '--no-deps-check',
+            '--max-failures',
+            '1000',
+          },
+        },
       },
       {
         name = 'neotest-java',
