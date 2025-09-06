@@ -21,6 +21,7 @@
     "mode": "eager"
   },
   "agent": {
+    "always_allow_tool_actions": true,
     "inline_assistant_model": {
       "provider": "zed.dev",
       "model": "claude-sonnet-4"
@@ -29,8 +30,7 @@
       "provider": "zed.dev",
       "model": "claude-sonnet-4"
     },
-    "default_profile": "write",
-    "version": "2"
+    "default_profile": "write"
   },
   "features": {
     "edit_prediction_provider": "supermaven"
@@ -85,14 +85,13 @@
   },
   "ui_font_family": "Monaspace Neon Var",
   "buffer_font_family": "Fira Code",
-  "buffer_font_ligatures": true,
   "buffer_font_features": {
     // Ligatures and Contextual Alternates
     //
     // Automatically replaces specific glyphs with alternatives
     // based on the surrounding characters to improve readability and create a more natural,
     // hand-drawn look. For instance, it can prevent awkward character collisions.
-    "calt": false,
+    "calt": true,
     //
     // Enables ligatures that are more decorative and a matter of stylistic choice,
     // rather than being essential for readability.

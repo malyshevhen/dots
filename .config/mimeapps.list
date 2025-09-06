@@ -119,6 +119,7 @@ video/flv=vlc.desktop
 video/x-flc=vlc.desktop
 video/x-fli=vlc.desktop
 video/x-flv=vlc.desktop
+text/markdown=dev.zed.Zed.desktop
 
 [Added Associations]
 x-scheme-handler/tonsite=org.telegram.desktop.desktop;
@@ -230,3 +231,4 @@ video/flv=vlc.desktop;
 video/x-flc=vlc.desktop;
 video/x-fli=vlc.desktop;
 video/x-flv=vlc.desktop;
+text/markdown=dev.zed.Zed.desktop;
