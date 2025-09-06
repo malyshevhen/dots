@@ -46,32 +46,15 @@ return Plug.new('https://github.com/rmagatti/auto-session', 'auto-session', {
 
   config = function(opts)
     require('auto-session').setup(opts)
-
-    -- Optional: Set up session lens integration
-    local ok, session_lens = pcall(require, 'auto-session.session-lens')
-    if ok then
-      vim.keymap.set('n', '<C-s>', session_lens.search_session, {
-        noremap = true,
-        desc = 'Search sessions',
-      })
-    end
   end,
 
   -- stylua: ignore
   keymaps = {
-    { map = '<leader>wr', cmd = '<cmd>Autosession search<CR>',    desc = 'Session search' },
-    { map = '<leader>ws', cmd = '<cmd>SessionSave<CR>',           desc = 'Save session', },
-    { map = '<leader>wa', cmd = '<cmd>SessionToggleAutoSave<CR>', desc = 'Toggle autosave', },
-    { map = '<leader>wd', cmd = '<cmd>SessionDelete<CR>',         desc = 'Delete session', },
-    { map = '<leader>wD', cmd = '<cmd>SessionPurgeOrphaned<CR>',  desc = 'Delete orphaned sessions', },
-    { map = '<leader>wl', cmd = '<cmd>SessionRestore<CR>',        desc = 'Load/Restore session', },
-    {
-      map = '<leader>wq',
-      cmd = function()
-        vim.cmd 'SessionSave'
-        vim.cmd 'qa'
-      end,
-      desc = 'Save session and quit',
-    },
+    { map = '<leader>wr', cmd = '<cmd>AutoSession search<CR>',        desc = 'Session search' },
+    { map = '<leader>ws', cmd = '<cmd>AutoSession save<CR>',          desc = 'Save session', },
+    { map = '<leader>wa', cmd = '<cmd>AutoSession toggle<CR>',        desc = 'Toggle autosave', },
+    { map = '<leader>wd', cmd = '<cmd>AutoSession delete<CR>',        desc = 'Delete session', },
+    { map = '<leader>wD', cmd = '<cmd>AutoSession purgeOrphaned<CR>', desc = 'Delete orphaned sessions', },
+    { map = '<leader>wl', cmd = '<cmd>AutoSession restore<CR>',       desc = 'Load/Restore session', },
   },
 })

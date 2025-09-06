@@ -119,7 +119,7 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
                 updateBuildConfiguration = 'interactive',
                 runtimes = {},
                 -- Enable Lombok annotation processing
-                workspaceFolder = workspace,
+                workspaceFolder = get_workspace_dir(),
               },
               maven = { downloadSources = true },
               implementationsCodeLens = { enabled = true },
@@ -141,6 +141,13 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
                   staticStarThreshold = 9999,
                 },
               },
+              -- Enhanced import settings
+              saveActions = {
+                organizeImports = true,
+              },
+              autobuild = {
+                enabled = true,
+              },
             },
             signatureHelp = { enabled = true },
             completion = {
@@ -157,6 +164,10 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
                 'lombok.experimental.FieldDefaults.*',
               },
               importOrder = { 'java', 'javax', 'com', 'org' },
+              -- Auto import settings
+              maxConcurrentBuilds = 1,
+              -- Enable additional text edits for imports
+              resolveAdditionalTextEditsSupport = true,
               filteredTypes = {
                 -- Hide Lombok generated classes from completion
                 'com.sun.*',
@@ -164,15 +175,60 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
                 'jdk.internal.*',
                 'io.micrometer.shaded.*',
               },
+              -- Enable auto-imports on completion
+              enabled = true,
+              guessMethodArguments = true,
+              includeDecompiledSources = true,
+              postfix = {
+                enabled = true,
+              },
             },
           },
           init_options = {
             bundles = {},
           },
+          -- Add completion handlers for automatic imports
+          capabilities = vim.tbl_deep_extend('force', vim.lsp.protocol.make_client_capabilities(), {
+            textDocument = {
+              completion = {
+                completionItem = {
+                  resolveSupport = {
+                    properties = { 'documentation', 'detail', 'additionalTextEdits' },
+                  },
+                },
+              },
+            },
+          }),
+          handlers = {
+            -- Handle completion resolve to add imports automatically
+            ['completionItem/resolve'] = function(err, result, ctx, config)
+              if result and result.additionalTextEdits then
+                vim.lsp.util.apply_text_edits(result.additionalTextEdits, ctx.bufnr, 'utf-8')
+              end
+              return vim.lsp.handlers['completionItem/resolve'](err, result, ctx, config)
+            end,
+          },
         }
 
         -- Start or attach to JDTLS
         jdtls.start_or_attach(config)
+
+        -- Set up completion with automatic imports for this buffer
+        vim.api.nvim_create_autocmd('LspAttach', {
+          buffer = vim.api.nvim_get_current_buf(),
+          callback = function(args)
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            if client and client.name == 'jdtls' then
+              -- Enable completion with resolve support
+              if client.supports_method 'textDocument/completion' then
+                vim.lsp.completion.enable(true, client.id, args.buf, {
+                  autotrigger = true,
+                  resolve = true, -- This enables automatic import resolution
+                })
+              end
+            end
+          end,
+        })
       end,
       group = vim.api.nvim_create_augroup('jdtls_setup', { clear = true }),
     })
@@ -216,5 +272,8 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
           apply = true,
         })
       end,                                                                                desc = 'Generate Methods',     ft = 'java' },
+
+    -- Manual import organization fallback
+    { map = '<leader>ci',  cmd = function() require('jdtls').organize_imports() end,        desc = 'Organize Imports (Manual)', ft = 'java' },
   },
 })

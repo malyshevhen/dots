@@ -8,6 +8,8 @@ vim.lsp.enable {
   'taplo',
   'codebook',
   'shellcheck',
+  'jdtls',
+  'dockerls',
 }
 
 vim.api.nvim_create_autocmd('LspAttach', {

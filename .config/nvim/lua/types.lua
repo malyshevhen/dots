@@ -13,7 +13,7 @@ Snacks = Snacks
 ---| "x" # visual block
 ---| "t" # terminal
 ---| "o" # operator-pending
----| "s" #
+---| "s" # select
 
 ---@class Keymap
 ---@field map string The key combination to map
@@ -26,10 +26,14 @@ Keymap.__index = Keymap
 ---@alias Keymaps Keymap[]
 
 -- Private helper functions
+---@param keymap Keymap
+---@return boolean is_valid Whether the keymap is valid
 local function is_valid_keymap(keymap)
   return keymap and type(keymap) == 'table' and keymap.map and type(keymap.map) == 'string' and keymap.cmd and keymap.map ~= ''
 end
 
+---@param value string|function
+---@return string|function safe_value Safe version of the value
 local function safe_tostring(value)
   if type(value) == 'function' then
     return '<function>'
@@ -40,7 +44,8 @@ local function safe_tostring(value)
   end
 end
 
----Sets up a single keymap safely
+---Sets up a single keymap safely.
+---
 ---@return boolean success Whether the keymap was set successfully
 function Keymap:set()
   if not is_valid_keymap(self) then
@@ -71,8 +76,9 @@ function Keymap:set()
   return true
 end
 
----Returns a string representation of the keymap
----@return string
+---Returns a string representation of the keymap.
+---
+---@return string description String representation of the keymap
 function Keymap:toString()
   local desc = self.desc or 'no description'
   local map = self.map or 'no map'
@@ -86,12 +92,13 @@ function Keymap:toString()
   return string.format('[%s] <%s>: %s -> %s', mode, desc, map, cmd)
 end
 
----Creates a new Keymap instance
+---Creates a new Keymap instance.
+---
 ---@param map string The key combination
 ---@param cmd string|function The command to execute
 ---@param desc string|nil Optional description
 ---@param mode KeymapMode|KeymapMode[]|nil Optional mode(s)
----@return Keymap
+---@return Keymap keymap New Keymap instance
 function Keymap.new(map, cmd, desc, mode)
   return setmetatable({
     map = map,
@@ -101,7 +108,8 @@ function Keymap.new(map, cmd, desc, mode)
   }, Keymap)
 end
 
----Formats a list of keymaps for display
+---Formats a list of keymaps for display.
+---
 ---@param mappings Keymaps List of keymaps
 ---@return string Formatted string
 function Keymap.formatList(mappings)
@@ -132,7 +140,8 @@ function Keymap.formatList(mappings)
   return table.concat(formatted, '\n')
 end
 
----Checks for conflicting keymaps and reports them
+---Checks for conflicting keymaps and reports them.
+---
 ---@param mappings Keymaps List of keymaps to check
 ---@return table<string, Keymap[]> conflicts Map of conflicting key combinations
 function Keymap.check_conflicts(mappings)
@@ -142,6 +151,7 @@ function Keymap.check_conflicts(mappings)
 
   ---@type table<string, Keymap[]>
   local key_map = {}
+  ---@type table<string, Keymap[]>
   local conflicts = {}
 
   for _, mapping in ipairs(mappings) do
@@ -168,14 +178,19 @@ function Keymap.check_conflicts(mappings)
 
   -- Report conflicts
   for key, conflicted_mappings in pairs(conflicts) do
+    ---@type table<KeymapMode>, string
     local mode, map = key:match '([^:]+):(.+)'
-    vim.notify(string.format("Keymap conflict detected for '%s' in mode '%s':\n%s", map, mode, Keymap.formatList(conflicted_mappings)), vim.log.levels.WARN)
+    ---@type string
+    local formatted_conflicts = Keymap.formatList(conflicted_mappings)
+
+    vim.notify(string.format("Keymap conflict detected for '%s' in mode '%s':\n%s", map, mode, formatted_conflicts), vim.log.levels.WARN)
   end
 
   return conflicts
 end
 
----Sets up multiple keymaps safely
+---Sets up multiple keymaps safely.
+---
 ---@param mappings Keymaps List of keymaps to set
 ---@return table<string, boolean> results Map of keymap identifiers to success status
 function Keymap.set_keymaps(mappings)
@@ -247,7 +262,8 @@ local function is_valid_plugin(plugin)
     and plugin.name ~= ''
 end
 
----Creates a new plugin instance
+---Creates a new plugin instance.
+---
 ---@param url string Plugin repository URL
 ---@param name string Plugin name/identifier
 ---@param opts PluginOptions|nil Plugin options
@@ -277,7 +293,8 @@ function Plug.new(url, name, opts)
   }, Plug)
 end
 
----Sets up the plugin safely
+---Sets up the plugin safely.
+---
 ---@return boolean success Whether setup was successful
 function Plug:setup()
   if not is_valid_plugin(self) then
@@ -329,7 +346,8 @@ function Plug:setup()
   return success
 end
 
----Installs all plugins using vim.pack.add
+---Installs all plugins using vim.pack.add.
+---
 ---@param plugins Plugs List of plugins to install
 ---@return boolean success Whether installation was successful
 function Plug.installAll(plugins)
@@ -343,8 +361,9 @@ function Plug.installAll(plugins)
     return true
   end
 
-  ---@type table[]
+  ---@type table<vim.pack.Spec>[]
   local specs = {}
+  ---@type table<string, boolean>
   local processed_urls = {}
 
   for i, plugin in ipairs(plugins) do
@@ -357,6 +376,7 @@ function Plug.installAll(plugins)
     if not processed_urls[plugin.url] then
       processed_urls[plugin.url] = true
 
+      ---@type vim.pack.Spec
       local spec = { src = plugin.url }
       if plugin.opts and plugin.opts.version then
         spec.version = plugin.opts.version
@@ -396,8 +416,9 @@ function Plug.installAll(plugins)
   return true
 end
 
----Returns a string representation of the plugin
----@return string
+---Returns a string representation of the plugin.
+---
+---@return string description String representation of the plugin
 function Plug:toString()
   local deps_count = (self.opts and self.opts.deps) and #self.opts.deps or 0
   local keymaps_count = (self.opts and self.opts.keymaps) and #self.opts.keymaps or 0
