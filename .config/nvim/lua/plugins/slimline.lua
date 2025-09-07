@@ -1,3 +1,3 @@
-return Plug.new('https://github.com/sschleemilch/slimline.nvim', 'slimline', {
+P:add('https://github.com/sschleemilch/slimline.nvim', 'slimline', {
   opts = { style = 'fg' },
 })

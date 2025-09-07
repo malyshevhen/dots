@@ -1,4 +1,4 @@
-return Plug.new('https://github.com/echasnovski/mini.nvim', 'mini.nvim', {
+P:add('https://github.com/echasnovski/mini.nvim', 'mini.nvim', {
   config = function()
     local mini_modules = {
       'pairs',

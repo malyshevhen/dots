@@ -1,4 +1,4 @@
-return Plug.new('https://github.com/nvim-treesitter/nvim-treesitter', 'nvim-treesitter', {
+P:add('https://github.com/nvim-treesitter/nvim-treesitter', 'nvim-treesitter', {
   config = function()
     local ts_update = require('nvim-treesitter.install').update { with_sync = true }
     ts_update()

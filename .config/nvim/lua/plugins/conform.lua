@@ -1,4 +1,4 @@
-return Plug.new('https://github.com/stevearc/conform.nvim', 'conform', {
+P:add('https://github.com/stevearc/conform.nvim', 'conform', {
   opts = {
     formatters_by_ft = {
       lua = { 'stylua', lsp_format = 'first' },
@@ -49,10 +49,10 @@ return Plug.new('https://github.com/stevearc/conform.nvim', 'conform', {
       end,
     })
   end,
-
-  -- stylua: ignore
-  keymaps = {
-    { map = '<leader>cf', cmd = function() require('conform').format() end,                desc = 'Code (Conform) format', mode = { 'n', 'v', 'x' }, },
-    { map = '<leader>cF', cmd = function() require('conform').format { async = true } end, desc = 'Format async',          mode = { 'n', 'v', 'x' }, },
-  },
 })
+
+-- stylua: ignore
+K:map {
+  { map = '<leader>cf', cmd = function() require('conform').format() end,                desc = 'Code (Conform) format', mode = { 'n', 'v', 'x' }, },
+  { map = '<leader>cF', cmd = function() require('conform').format { async = true } end, desc = 'Format async',          mode = { 'n', 'v', 'x' }, },
+}

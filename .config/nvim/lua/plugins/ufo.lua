@@ -1,4 +1,4 @@
-return Plug.new('https://github.com/kevinhwang91/nvim-ufo', 'ufo', {
+P:add('https://github.com/kevinhwang91/nvim-ufo', 'ufo', {
   deps = { 'https://github.com/kevinhwang91/promise-async' },
 
   opts = {
@@ -13,10 +13,10 @@ return Plug.new('https://github.com/kevinhwang91/nvim-ufo', 'ufo', {
     vim.o.foldlevelstart = 99
     vim.o.foldenable = true
   end,
-
-  -- stylua: ignore
-  keymaps = {
-    { map = 'zR', cmd = function() require('ufo').openAllFolds() end,  desc = 'Open all folds', },
-    { map = 'zM', cmd = function() require('ufo').closeAllFolds() end, desc = 'Close all folds', },
-  },
 })
+
+-- stylua: ignore
+K:map {
+  { map = 'zR', cmd = function() require('ufo').openAllFolds() end,  desc = 'Open all folds', },
+  { map = 'zM', cmd = function() require('ufo').closeAllFolds() end, desc = 'Close all folds', },
+}

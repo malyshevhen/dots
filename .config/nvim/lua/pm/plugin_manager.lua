@@ -1,10 +1,32 @@
----@diagnostic disable: undefined-global
--- Type definitions and utilities for Neovim configuration
--- Provides structured plugin management and keymap handling
+local M = {}
 
--- Ensure vim global is available
-vim = vim
-Snacks = Snacks
+local log = require 'pm.utils.vim_logger'
+local loader = require 'pm.utils.loader'
+
+-- Defaults
+---@type string Path to the plugins, directory by default
+local _plugins_dir = vim.fn.stdpath 'config' .. '/lua/plugins'
+---@type string Path to the keymaps, directory by default, but can be a file
+local _keymaps_dir = vim.fn.stdpath 'config' .. '/lua/keymaps.lua'
+
+-- Private helper function
+
+---Loads all plugins from the plugins directory using the new loader utility.
+---
+---@param plugins_dir string Path to the plugins directory
+---@param options table|nil Optional configuration
+---@return table Results of plugin loading
+local function _load_plugins(plugins_dir, options)
+  return loader.load_plugins_with_require(plugins_dir, options)
+end
+
+---Loads all keymaps using the new loader utility.
+---
+---@param keymaps_path string Path to the keymaps file
+---@return boolean success Whether the keymaps were loaded successfully
+local function _load_keymaps(keymaps_path)
+  return loader.load_keymaps_file(keymaps_path)
+end
 
 ---@alias KeymapMode
 ---| "n" # normal
@@ -29,7 +51,12 @@ Keymap.__index = Keymap
 ---@param keymap Keymap
 ---@return boolean is_valid Whether the keymap is valid
 local function is_valid_keymap(keymap)
-  return keymap and type(keymap) == 'table' and keymap.map and type(keymap.map) == 'string' and keymap.cmd and keymap.map ~= ''
+  return keymap
+    and type(keymap) == 'table'
+    and keymap.map
+    and type(keymap.map) == 'string'
+    and keymap.cmd
+    and keymap.map ~= ''
 end
 
 ---@param value string|function
@@ -69,7 +96,10 @@ function Keymap:set()
   for _, mode in ipairs(modes) do
     local ok, err = pcall(vim.keymap.set, mode, self.map, self.cmd, opts)
     if not ok then
-      vim.notify(string.format("Failed to set keymap '%s' for mode '%s': %s", self.map, mode, err), vim.log.levels.ERROR)
+      vim.notify(
+        string.format("Failed to set keymap '%s' for mode '%s': %s", self.map, mode, err),
+        vim.log.levels.ERROR
+      )
       return false
     end
   end
@@ -183,7 +213,15 @@ function Keymap.check_conflicts(mappings)
     ---@type string
     local formatted_conflicts = Keymap.formatList(conflicted_mappings)
 
-    vim.notify(string.format("Keymap conflict detected for '%s' in mode '%s':\n%s", map, mode, formatted_conflicts), vim.log.levels.WARN)
+    vim.notify(
+      string.format(
+        "Keymap conflict detected for '%s' in mode '%s':\n%s",
+        map,
+        mode,
+        formatted_conflicts
+      ),
+      vim.log.levels.WARN
+    )
   end
 
   return conflicts
@@ -213,7 +251,10 @@ function Keymap.set_keymaps(mappings)
       elseif is_valid_keymap(keymap) then
         success = Keymap.new(keymap.map, keymap.cmd, keymap.desc, keymap.mode):set()
       else
-        vim.notify(string.format('Invalid keymap at index %d: %s', i, vim.inspect(keymap)), vim.log.levels.WARN)
+        vim.notify(
+          string.format('Invalid keymap at index %d: %s', i, vim.inspect(keymap)),
+          vim.log.levels.WARN
+        )
         success = false
       end
 
@@ -232,6 +273,47 @@ function Keymap.set_keymaps(mappings)
   end
 
   return results
+end
+
+---@class KeymapsStore
+---@field keymaps Keymaps
+---@field _keymaps_dir string
+local KeymapsStore = {}
+KeymapsStore.__index = KeymapsStore
+
+---Creates a new keymaps store instance.
+---
+---@param keymaps_dir string? Path to the keymaps directory or file
+---@return KeymapsStore store New keymaps store instance
+function KeymapsStore.new(keymaps_dir)
+  return setmetatable({
+    keymaps = {},
+    _keymaps_dir = keymaps_dir or _keymaps_dir,
+  }, KeymapsStore)
+end
+
+---Adds a keymap to the keymaps store.
+---
+---@param keymap Keymap|Keymap[]
+function KeymapsStore:map(keymap)
+  if type(keymap) == 'table' then
+    for _, keymap_ in ipairs(keymap) do
+      if is_valid_keymap(keymap_) then
+        table.insert(self.keymaps, keymap_)
+      else
+        log.warn_fmt('Invalid keymap: %s', vim.inspect(keymap_))
+      end
+    end
+  elseif is_valid_keymap(keymap) then
+    table.insert(self.keymaps, keymap)
+  else
+    log.warn_fmt('Invalid keymap: %s', vim.inspect(keymap))
+  end
+end
+
+---Loads all keymaps from the keymaps directory.
+function KeymapsStore:load()
+  _load_keymaps(self._keymaps_dir)
 end
 
 ---@class PluginOptions
@@ -298,7 +380,10 @@ end
 ---@return boolean success Whether setup was successful
 function Plug:setup()
   if not is_valid_plugin(self) then
-    vim.notify(string.format('Invalid plugin configuration: %s', vim.inspect(self)), vim.log.levels.ERROR)
+    vim.notify(
+      string.format('Invalid plugin configuration: %s', vim.inspect(self)),
+      vim.log.levels.ERROR
+    )
     return false
   end
 
@@ -310,7 +395,10 @@ function Plug:setup()
     if ok and type(plugin.setup) == 'function' then
       local setup_ok, err = pcall(plugin.setup, self.opts.opts)
       if not setup_ok then
-        vim.notify(string.format("Failed to setup plugin '%s': %s", self.name, err), vim.log.levels.ERROR)
+        vim.notify(
+          string.format("Failed to setup plugin '%s': %s", self.name, err),
+          vim.log.levels.ERROR
+        )
         success = false
       end
     elseif not ok then
@@ -323,11 +411,17 @@ function Plug:setup()
     if type(self.opts.config) == 'function' then
       local config_ok, err = pcall(self.opts.config)
       if not config_ok then
-        vim.notify(string.format("Failed to run config for plugin '%s': %s", self.name, err), vim.log.levels.ERROR)
+        vim.notify(
+          string.format("Failed to run config for plugin '%s': %s", self.name, err),
+          vim.log.levels.ERROR
+        )
         success = false
       end
     else
-      vim.notify(string.format("Plugin '%s' config must be a function", self.name), vim.log.levels.WARN)
+      vim.notify(
+        string.format("Plugin '%s' config must be a function", self.name),
+        vim.log.levels.WARN
+      )
     end
   end
 
@@ -368,7 +462,10 @@ function Plug.installAll(plugins)
 
   for i, plugin in ipairs(plugins) do
     if not is_valid_plugin(plugin) then
-      vim.notify(string.format('Invalid plugin at index %d: %s', i, vim.inspect(plugin)), vim.log.levels.ERROR)
+      vim.notify(
+        string.format('Invalid plugin at index %d: %s', i, vim.inspect(plugin)),
+        vim.log.levels.ERROR
+      )
       return false
     end
 
@@ -394,7 +491,10 @@ function Plug.installAll(plugins)
             end
           end
         else
-          vim.notify(string.format("Dependencies for plugin '%s' must be a table of strings", plugin.name), vim.log.levels.WARN)
+          vim.notify(
+            string.format("Dependencies for plugin '%s' must be a table of strings", plugin.name),
+            vim.log.levels.WARN
+          )
         end
       end
     end
@@ -411,7 +511,10 @@ function Plug.installAll(plugins)
     return false
   end
 
-  vim.notify(string.format('Successfully processed %d plugin(s) with %d specification(s)', #plugins, #specs), vim.log.levels.INFO)
+  vim.notify(
+    string.format('Successfully processed %d plugin(s) with %d specification(s)', #plugins, #specs),
+    vim.log.levels.INFO
+  )
 
   return true
 end
@@ -423,11 +526,169 @@ function Plug:toString()
   local deps_count = (self.opts and self.opts.deps) and #self.opts.deps or 0
   local keymaps_count = (self.opts and self.opts.keymaps) and #self.opts.keymaps or 0
 
-  return string.format('Plugin: %s (%s) - %d deps, %d keymaps', self.name, self.url, deps_count, keymaps_count)
+  return string.format(
+    'Plugin: %s (%s) - %d deps, %d keymaps',
+    self.name,
+    self.url,
+    deps_count,
+    keymaps_count
+  )
 end
 
--- Export public API
-return {
-  Keymap = Keymap,
-  Plug = Plug,
-}
+---@class PluginManagerConfig
+---@field plugins_dir string
+---@field keymaps_dir string
+
+---@class PluginManager
+---@field plugins Plugs
+---@field keymaps_store KeymapsStore
+---@field _plugins_dir string
+local PluginManager = {}
+PluginManager.__index = PluginManager
+
+---Creates a new plugin manager instance.
+---
+---@param opts? PluginManagerConfig
+---@return PluginManager manager New plugin manager instance
+function PluginManager.new(opts)
+  local _opts = opts or {}
+
+  -- Set default config values
+  ---@type PluginManagerConfig
+  local config = {
+    plugins_dir = _opts.plugins_dir or _plugins_dir,
+    keymaps_dir = _opts.keymaps_dir or _keymaps_dir,
+  }
+
+  return setmetatable({
+    plugins = {},
+    keymaps_store = KeymapsStore.new(config.keymaps_dir),
+    _plugins_dir = config.plugins_dir,
+  }, PluginManager)
+end
+
+---Initializes the plugin manager.
+---
+---Sets the global variable `PluginManager` to the new plugin manager instance.
+---
+---@return PluginManager manager New plugin manager instance
+function PluginManager.init()
+  _G.P = PluginManager.new()
+  _G.K = KeymapsStore.new()
+
+  return _G.P
+end
+
+---Adds a plugin to the plugin manager.
+---
+---@Param url string Plugin repository URL
+---@Param name string Plugin name/identifier
+---@Param opts PluginOptions Plugin options
+function PluginManager:add(url, name, opts)
+  local plugin = Plug.new(url, name, opts)
+
+  if is_valid_plugin(plugin) then
+    table.insert(self.plugins, plugin)
+    return true
+  else
+    log.warn 'Invalid plugin configuration'
+    return false
+  end
+end
+
+---Sets up all plugins and keymaps using the new loader utilities.
+function PluginManager:setup()
+  -- Use the new loader to initialize keymaps first, then plugins
+  local config = {
+    keymaps_path = self.keymaps_store._keymaps_dir,
+    plugins_dir = self._plugins_dir,
+    options = { silent = false },
+  }
+
+  local init_results = loader.initialize(config)
+
+  -- Handle keymaps initialization results
+  if not init_results.keymaps.success then
+    log.warn 'Keymaps initialization failed, but continuing with plugin setup'
+  end
+
+  -- Handle plugins initialization results
+  local plugin_results = init_results.plugins
+  if plugin_results.failure_count > 0 then
+    for _, failed in ipairs(plugin_results.failed) do
+      log.error_fmt('Failed to load plugin file: %s - %s', failed.module, failed.error)
+    end
+  end
+
+  -- Install all plugins
+  local install_success = Plug.installAll(self.plugins)
+  if not install_success then
+    log.error 'Plugin installation failed'
+    return
+  end
+
+  -- Setup all plugins and collect keymaps
+  ---@type Keymaps
+  local all_keymaps = vim.deepcopy(_G.K and _G.K.keymaps or {})
+
+  ---@type {name: string, error: string}[]
+  local setup_failures = {}
+
+  for _, plugin in ipairs(self.plugins) do
+    local ok, result = pcall(function()
+      return plugin:setup()
+    end)
+    if not ok then
+      table.insert(setup_failures, {
+        name = plugin.name or 'Unknown',
+        error = result,
+      })
+      log.error_fmt('Failed to setup plugin: %s\n%s', plugin.name or 'Unknown', tostring(result))
+    elseif not result then
+      table.insert(setup_failures, {
+        name = plugin.name or 'Unknown',
+        error = 'Setup returned false',
+      })
+    end
+
+    -- Collect plugin keymaps
+    if plugin.opts and plugin.opts.keymaps then
+      vim.list_extend(all_keymaps, plugin.opts.keymaps)
+    end
+  end
+
+  -- Report setup results
+  if #setup_failures > 0 then
+    local failure_names = {}
+    for _, failure in ipairs(setup_failures) do
+      table.insert(failure_names, failure.name)
+    end
+    log.warn_fmt(
+      'Plugin setup completed with %d failure(s): %s',
+      #setup_failures,
+      table.concat(failure_names, ', ')
+    )
+  else
+    log.info_fmt('All %d plugins setup successfully', #self.plugins)
+  end
+
+  -- Check for keymap conflicts and setup all keymaps
+  Keymap.check_conflicts(all_keymaps)
+  Keymap.set_keymaps(all_keymaps)
+
+  -- Log final summary
+  log.info_fmt(
+    'Plugin Manager setup completed - Keymaps: %s, Plugins loaded: %d/%d, Plugin setups: %d/%d',
+    init_results.keymaps.success and 'Success' or 'Failed',
+    plugin_results.success_count,
+    plugin_results.total,
+    #self.plugins - #setup_failures,
+    #self.plugins
+  )
+end
+
+function M.plugin_manager(opts)
+  return PluginManager.new(opts)
+end
+
+return M

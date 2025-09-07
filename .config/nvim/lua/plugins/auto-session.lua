@@ -1,4 +1,4 @@
-return Plug.new('https://github.com/rmagatti/auto-session', 'auto-session', {
+P:add('https://github.com/rmagatti/auto-session', 'auto-session', {
   opts = {
     suppressed_dirs = { '~/', '~/Projects', '~/Downloads', '/', '/tmp', '/private/tmp' },
     auto_restore = false,
@@ -47,14 +47,14 @@ return Plug.new('https://github.com/rmagatti/auto-session', 'auto-session', {
   config = function(opts)
     require('auto-session').setup(opts)
   end,
-
-  -- stylua: ignore
-  keymaps = {
-    { map = '<leader>wr', cmd = '<cmd>AutoSession search<CR>',        desc = 'Session search' },
-    { map = '<leader>ws', cmd = '<cmd>AutoSession save<CR>',          desc = 'Save session', },
-    { map = '<leader>wa', cmd = '<cmd>AutoSession toggle<CR>',        desc = 'Toggle autosave', },
-    { map = '<leader>wd', cmd = '<cmd>AutoSession delete<CR>',        desc = 'Delete session', },
-    { map = '<leader>wD', cmd = '<cmd>AutoSession purgeOrphaned<CR>', desc = 'Delete orphaned sessions', },
-    { map = '<leader>wl', cmd = '<cmd>AutoSession restore<CR>',       desc = 'Load/Restore session', },
-  },
 })
+
+-- stylua: ignore
+K:map {
+  { map = '<leader>wr', cmd = '<cmd>AutoSession search<CR>',        desc = 'Session search' },
+  { map = '<leader>ws', cmd = '<cmd>AutoSession save<CR>',          desc = 'Save session', },
+  { map = '<leader>wa', cmd = '<cmd>AutoSession toggle<CR>',        desc = 'Toggle autosave', },
+  { map = '<leader>wd', cmd = '<cmd>AutoSession delete<CR>',        desc = 'Delete session', },
+  { map = '<leader>wD', cmd = '<cmd>AutoSession purgeOrphaned<CR>', desc = 'Delete orphaned sessions', },
+  { map = '<leader>wl', cmd = '<cmd>AutoSession restore<CR>',       desc = 'Load/Restore session', },
+}

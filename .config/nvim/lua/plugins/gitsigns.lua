@@ -1,4 +1,4 @@
-return Plug.new('https://github.com/lewis6991/gitsigns.nvim', 'gitsigns', {
+P:add('https://github.com/lewis6991/gitsigns.nvim', 'gitsigns', {
   opts = {
     signs = {
       add = { text = '┃' },
@@ -97,13 +97,13 @@ return Plug.new('https://github.com/lewis6991/gitsigns.nvim', 'gitsigns', {
       map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', { desc = 'Select hunk' })
     end,
   },
-
-  -- stylua: ignore
-  keymaps = {
-    { map = '<leader>gtb', cmd = function() require('gitsigns').toggle_current_line_blame() end, desc = 'Toggle Git Blame', },
-    { map = '<leader>gd',  cmd = function() require('gitsigns').toggle_deleted() end,            desc = 'Toggle Git Deleted', },
-    { map = '<leader>gw',  cmd = function() require('gitsigns').toggle_word_diff() end,          desc = 'Toggle Git Word Diff', },
-    { map = '<leader>gs',  cmd = function() require('gitsigns').toggle_signs() end,              desc = 'Toggle Git Signs', },
-    { map = '<leader>gn',  cmd = function() require('gitsigns').toggle_numhl() end,              desc = 'Toggle Git Number Highlight', },
-  },
 })
+
+-- stylua: ignore
+K:map {
+  { map = '<leader>gtb', cmd = function() require('gitsigns').toggle_current_line_blame() end, desc = 'Toggle Git Blame', },
+  { map = '<leader>gd',  cmd = function() require('gitsigns').toggle_deleted() end,            desc = 'Toggle Git Deleted', },
+  { map = '<leader>gw',  cmd = function() require('gitsigns').toggle_word_diff() end,          desc = 'Toggle Git Word Diff', },
+  { map = '<leader>gs',  cmd = function() require('gitsigns').toggle_signs() end,              desc = 'Toggle Git Signs', },
+  { map = '<leader>gn',  cmd = function() require('gitsigns').toggle_numhl() end,              desc = 'Toggle Git Number Highlight', },
+}

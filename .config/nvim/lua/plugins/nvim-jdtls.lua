@@ -1,4 +1,4 @@
-return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
+P:add('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
   deps = {
     'https://github.com/nvim-lua/plenary.nvim',
   },
@@ -36,7 +36,8 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
         -- Function to get Lombok jar path
         local function get_lombok_jar()
           -- First try the specific version mentioned
-          local specific_lombok = vim.fn.expand '$HOME/.m2/repository/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar'
+          local specific_lombok =
+            vim.fn.expand '$HOME/.m2/repository/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar'
           if vim.fn.filereadable(specific_lombok) == 1 then
             return specific_lombok
           end
@@ -79,7 +80,8 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
         end
 
         -- Find root directory
-        local root_dir = require('jdtls.setup').find_root { '.git', 'mvnw', 'gradlew', 'pom.xml', 'build.gradle' }
+        local root_dir =
+          require('jdtls.setup').find_root { '.git', 'mvnw', 'gradlew', 'pom.xml', 'build.gradle' }
 
         -- Determine the OS config directory
         local os_config = get_os_config()
@@ -99,9 +101,15 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
           if lombok_jar then
             table.insert(cmd, '--jvm-arg=-javaagent:' .. lombok_jar)
             local version = string.match(lombok_jar, 'lombok%-([%d%.]+)%.jar') or 'unknown'
-            vim.notify('Lombok integration enabled (version: ' .. version .. ')', vim.log.levels.INFO)
+            vim.notify(
+              'Lombok integration enabled (version: ' .. version .. ')',
+              vim.log.levels.INFO
+            )
           else
-            vim.notify('Lombok jar not found. Install with: mvn dependency:get -Dartifact=org.projectlombok:lombok:1.18.30', vim.log.levels.WARN)
+            vim.notify(
+              'Lombok jar not found. Install with: mvn dependency:get -Dartifact=org.projectlombok:lombok:1.18.30',
+              vim.log.levels.WARN
+            )
           end
         else
           vim.notify('JDTLS not found. Please install eclipse.jdt.ls', vim.log.levels.ERROR)
@@ -188,17 +196,21 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
             bundles = {},
           },
           -- Add completion handlers for automatic imports
-          capabilities = vim.tbl_deep_extend('force', vim.lsp.protocol.make_client_capabilities(), {
-            textDocument = {
-              completion = {
-                completionItem = {
-                  resolveSupport = {
-                    properties = { 'documentation', 'detail', 'additionalTextEdits' },
+          capabilities = vim.tbl_deep_extend(
+            'force',
+            vim.lsp.protocol.make_client_capabilities(),
+            {
+              textDocument = {
+                completion = {
+                  completionItem = {
+                    resolveSupport = {
+                      properties = { 'documentation', 'detail', 'additionalTextEdits' },
+                    },
                   },
                 },
               },
-            },
-          }),
+            }
+          ),
           handlers = {
             -- Handle completion resolve to add imports automatically
             ['completionItem/resolve'] = function(err, result, ctx, config)
@@ -233,47 +245,64 @@ return Plug.new('https://github.com/mfussenegger/nvim-jdtls', 'nvim-jdtls', {
       group = vim.api.nvim_create_augroup('jdtls_setup', { clear = true }),
     })
   end,
-
-  -- stylua: ignore
-  keymaps = {
-    -- Java-specific LSP keymaps (only active for Java files)
-    { map = '<leader>co',  cmd = function() require('jdtls').organize_imports() end,        desc = 'Organize Imports',     ft = 'java' },
-    { map = '<leader>crv', cmd = function() require('jdtls').extract_variable() end,       desc = 'Extract Variable',     ft = 'java' },
-    { map = '<leader>crc', cmd = function() require('jdtls').extract_constant() end,       desc = 'Extract Constant',     ft = 'java' },
-    { map = '<leader>crm', cmd = function() require('jdtls').extract_method(true) end,     desc = 'Extract Method',       ft = 'java', mode = 'v' },
-    { map = '<leader>df',  cmd = function() require('jdtls').test_class() end,             desc = 'Test Class',           ft = 'java' },
-    { map = '<leader>dn',  cmd = function() require('jdtls').test_nearest_method() end,    desc = 'Test Nearest Method',  ft = 'java' },
-
-    -- Lombok-specific keymaps
-    { map = '<leader>cl',  cmd = '',                                                        desc = '+lombok',              ft = 'java' },
-    { map = '<leader>cld', cmd = function()
-        local current_file = vim.fn.expand('%:p')
-        local cmd = 'java -jar ' .. vim.fn.expand('$HOME/.m2/repository/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar') .. ' delombok ' .. current_file
-        vim.fn.system(cmd)
-        vim.notify('Delombok completed for ' .. vim.fn.expand('%:t'), vim.log.levels.INFO)
-      end,                                                                                desc = 'Delombok Current File', ft = 'java' },
-    { map = '<leader>clr', cmd = function()
-        vim.lsp.buf.code_action({
-          filter = function(action)
-            return string.match(action.title or '', 'lombok') or string.match(action.title or '', 'Lombok')
-          end,
-          apply = true,
-        })
-      end,                                                                                desc = 'Lombok Refactor',     ft = 'java' },
-    { map = '<leader>clg', cmd = function()
-        -- Generate getters/setters using LSP code actions
-        vim.lsp.buf.code_action({
-          filter = function(action)
-            local title = action.title or ''
-            return string.match(title, 'Generate getter') or
-                   string.match(title, 'Generate setter') or
-                   string.match(title, 'Generate constructor')
-          end,
-          apply = true,
-        })
-      end,                                                                                desc = 'Generate Methods',     ft = 'java' },
-
-    -- Manual import organization fallback
-    { map = '<leader>ci',  cmd = function() require('jdtls').organize_imports() end,        desc = 'Organize Imports (Manual)', ft = 'java' },
-  },
 })
+
+-- stylua: ignore
+K:map {
+  -- Java-specific LSP keymaps (only active for Java files)
+  { map = '<leader>co',  cmd = function() require('jdtls').organize_imports() end,    desc = 'Organize Imports',    ft = 'java' },
+  { map = '<leader>crv', cmd = function() require('jdtls').extract_variable() end,    desc = 'Extract Variable',    ft = 'java' },
+  { map = '<leader>crc', cmd = function() require('jdtls').extract_constant() end,    desc = 'Extract Constant',    ft = 'java' },
+  { map = '<leader>crm', cmd = function() require('jdtls').extract_method(true) end,  desc = 'Extract Method',      ft = 'java', mode = 'v' },
+  { map = '<leader>df',  cmd = function() require('jdtls').test_class() end,          desc = 'Test Class',          ft = 'java' },
+  { map = '<leader>dn',  cmd = function() require('jdtls').test_nearest_method() end, desc = 'Test Nearest Method', ft = 'java' },
+
+  -- Lombok-specific keymaps
+  { map = '<leader>cl',  cmd = '',                                                    desc = '+lombok',             ft = 'java' },
+  {
+    map = '<leader>cld',
+    cmd = function()
+      local current_file = vim.fn.expand('%:p')
+      local cmd = 'java -jar ' ..
+          vim.fn.expand('$HOME/.m2/repository/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar') ..
+          ' delombok ' .. current_file
+      vim.fn.system(cmd)
+      vim.notify('Delombok completed for ' .. vim.fn.expand('%:t'), vim.log.levels.INFO)
+    end,
+    desc = 'Delombok Current File',
+    ft = 'java'
+  },
+  {
+    map = '<leader>clr',
+    cmd = function()
+      vim.lsp.buf.code_action({
+        filter = function(action)
+          return string.match(action.title or '', 'lombok') or string.match(action.title or '', 'Lombok')
+        end,
+        apply = true,
+      })
+    end,
+    desc = 'Lombok Refactor',
+    ft = 'java'
+  },
+  {
+    map = '<leader>clg',
+    cmd = function()
+      -- Generate getters/setters using LSP code actions
+      vim.lsp.buf.code_action({
+        filter = function(action)
+          local title = action.title or ''
+          return string.match(title, 'Generate getter') or
+              string.match(title, 'Generate setter') or
+              string.match(title, 'Generate constructor')
+        end,
+        apply = true,
+      })
+    end,
+    desc = 'Generate Methods',
+    ft = 'java'
+  },
+
+  -- Manual import organization fallback
+  { map = '<leader>ci', cmd = function() require('jdtls').organize_imports() end, desc = 'Organize Imports (Manual)', ft = 'java' },
+}

@@ -360,6 +360,16 @@
     }
   },
   "lsp": {
+    "lua-language-server": {
+      "settings": {
+        "workspace": {
+          "library": {
+            "vim": true
+          },
+          "checkThirdParty": false
+        }
+      }
+    },
     "pylsp": {
       "settings": {
         "plugins": {

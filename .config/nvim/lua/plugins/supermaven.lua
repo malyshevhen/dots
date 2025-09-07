@@ -1,4 +1,4 @@
-return Plug.new('https://github.com/supermaven-inc/supermaven-nvim', 'supermaven-nvim', {
+P:add('https://github.com/supermaven-inc/supermaven-nvim', 'supermaven-nvim', {
   opts = {
     keymaps = {
       accept_suggestion = '<Tab>',

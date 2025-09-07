@@ -1,4 +1,4 @@
-return Plug.new('https://github.com/rose-pine/neovim', 'rose-pine', {
+P:add('https://github.com/rose-pine/neovim', 'rose-pine', {
   opts = {
     variant = 'auto',
     dark_variant = 'main',

@@ -1,48 +1,56 @@
--- Options
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+---@class CustomOptions
+local M = {}
 
-vim.opt.signcolumn = "yes"
-vim.cmd("set expandtab")
-vim.cmd("set completeopt=noselect")
+function M.setup()
+  -- Options
+  vim.g.mapleader = ' '
+  vim.g.maplocalleader = ' '
 
-vim.opt.winborder = "rounded"
+  vim.opt.signcolumn = 'yes'
+  vim.cmd 'set expandtab'
+  vim.cmd 'set completeopt=noselect'
 
-vim.api.nvim_set_option_value("clipboard", "unnamed", {})
+  vim.opt.winborder = 'rounded'
 
--- set faster completion
-vim.opt.updatetime = 60
+  vim.api.nvim_set_option_value('clipboard', 'unnamed', {})
 
--- disable backup file creation
-vim.opt.backup = false
--- prevent editing of files being edited elsewhere
-vim.opt.writebackup = false
+  -- set faster completion
+  vim.opt.updatetime = 60
 
--- Removes tilde symbols from the end of the page
-vim.opt.fillchars = { eob = " " }
+  -- disable backup file creation
+  vim.opt.backup = false
+  -- prevent editing of files being edited elsewhere
+  vim.opt.writebackup = false
 
-vim.opt.swapfile = false
+  -- Removes tilde symbols from the end of the page
+  vim.opt.fillchars = { eob = ' ' }
 
-vim.opt.number = true
-vim.opt.relativenumber = true
+  vim.opt.swapfile = false
 
-vim.opt.scrolloff = 10
+  vim.opt.number = true
+  vim.opt.relativenumber = true
 
--- Nerd Fonts
-vim.g.have_nerd_font = true
+  vim.opt.scrolloff = 10
 
--- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = "a"
+  -- Nerd Fonts
+  vim.g.have_nerd_font = true
 
--- Save undo history
-vim.opt.undofile = true
+  -- Enable mouse mode, can be useful for resizing splits for example!
+  vim.opt.mouse = 'a'
 
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
+  -- Save undo history
+  vim.opt.undofile = true
 
--- Show which line your cursor is on
-vim.opt.cursorline = true
+  -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
+  vim.opt.ignorecase = true
+  vim.opt.smartcase = true
 
--- Disable line wraps
-vim.opt.wrap = false
+  -- Show which line your cursor is on
+  vim.opt.cursorline = true
+
+  -- Disable line wraps
+  vim.opt.wrap = false
+end
+
+return M
+

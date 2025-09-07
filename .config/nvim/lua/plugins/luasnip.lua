@@ -1,4 +1,4 @@
-return Plug.new('https://github.com/L3MON4D3/LuaSnip', 'LuaSnip', {
+P:add('https://github.com/L3MON4D3/LuaSnip', 'LuaSnip', {
   config = function()
     local luasnip = require 'luasnip'
 

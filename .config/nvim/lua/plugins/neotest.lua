@@ -1,4 +1,4 @@
-return Plug.new('https://github.com/nvim-neotest/neotest', 'neotest', {
+P:add('https://github.com/nvim-neotest/neotest', 'neotest', {
   deps = {
     'https://github.com/nvim-neotest/nvim-nio',
     'https://github.com/antoinemadec/FixCursorHold.nvim',
@@ -269,37 +269,37 @@ return Plug.new('https://github.com/nvim-neotest/neotest', 'neotest', {
       neotest.setup(neotest_config)
     end
   end,
-
-  -- stylua: ignore
-  keymaps = {
-    -- Test running
-    { map = '<leader>t',  cmd = '',                                                                                        desc = '+test', },
-    { map = '<leader>tt', cmd = function() require('neotest').run.run(vim.fn.expand '%') end,                              desc = 'Run File (Neotest)', },
-    { map = '<leader>tT', cmd = function() require('neotest').run.run(vim.uv.cwd()) end,                                   desc = 'Run All Test Files (Neotest)', },
-    { map = '<leader>tr', cmd = function() require('neotest').run.run() end,                                               desc = 'Run Nearest (Neotest)', },
-    { map = '<leader>tl', cmd = function() require('neotest').run.run_last() end,                                          desc = 'Run Last (Neotest)', },
-    { map = '<leader>tS', cmd = function() require('neotest').run.stop() end,                                              desc = 'Stop (Neotest)', },
-    { map = '<leader>ta', cmd = function() require('neotest').run.attach() end,                                            desc = 'Attach (Neotest)', },
-
-    -- Test UI
-    { map = '<leader>ts', cmd = function() require('neotest').summary.toggle() end,                                        desc = 'Toggle Summary (Neotest)', },
-    { map = '<leader>to', cmd = function() require('neotest').output.open { enter = true, auto_close = true } end,         desc = 'Show Output (Neotest)', },
-    { map = '<leader>tO', cmd = function() require('neotest').output_panel.toggle() end,                                   desc = 'Toggle Output Panel (Neotest)', },
-
-    -- Test watching
-    { map = '<leader>tw', cmd = function() require('neotest').watch.toggle(vim.fn.expand '%') end,                         desc = 'Toggle Watch (Neotest)', },
-    { map = '<leader>tW', cmd = function() require('neotest').watch.toggle(vim.uv.cwd()) end,                              desc = 'Toggle Watch All (Neotest)', },
-
-    -- Test debugging
-    { map = '<leader>td', cmd = function() require('neotest').run.run { strategy = 'dap' } end,                            desc = 'Debug Nearest (Neotest)', },
-    { map = '<leader>tD', cmd = function() require('neotest').run.run { vim.fn.expand '%', strategy = 'dap' } end,         desc = 'Debug File (Neotest)', },
-
-    -- Test marks and targets
-    { map = '<leader>tm', cmd = function() require('neotest').run.run { suite = false, extra_args = { '--verbose' } } end, desc = 'Run Nearest with Args (Neotest)', },
-    { map = '<leader>tM', cmd = function() require('neotest').summary.run_marked() end,                                    desc = 'Run Marked Tests (Neotest)', },
-
-    -- Navigation
-    { map = ']t',         cmd = function() require('neotest').jump.next { status = 'failed' } end,                         desc = 'Next Failed Test', },
-    { map = '[t',         cmd = function() require('neotest').jump.prev { status = 'failed' } end,                         desc = 'Previous Failed Test', },
-  },
 })
+
+-- stylua: ignore
+K:map {
+  -- Test running
+  { map = '<leader>t',  cmd = '',                                                                                        desc = '+test', },
+  { map = '<leader>tt', cmd = function() require('neotest').run.run(vim.fn.expand '%') end,                              desc = 'Run File (Neotest)', },
+  { map = '<leader>tT', cmd = function() require('neotest').run.run(vim.uv.cwd()) end,                                   desc = 'Run All Test Files (Neotest)', },
+  { map = '<leader>tr', cmd = function() require('neotest').run.run() end,                                               desc = 'Run Nearest (Neotest)', },
+  { map = '<leader>tl', cmd = function() require('neotest').run.run_last() end,                                          desc = 'Run Last (Neotest)', },
+  { map = '<leader>tS', cmd = function() require('neotest').run.stop() end,                                              desc = 'Stop (Neotest)', },
+  { map = '<leader>ta', cmd = function() require('neotest').run.attach() end,                                            desc = 'Attach (Neotest)', },
+
+  -- Test UI
+  { map = '<leader>ts', cmd = function() require('neotest').summary.toggle() end,                                        desc = 'Toggle Summary (Neotest)', },
+  { map = '<leader>to', cmd = function() require('neotest').output.open { enter = true, auto_close = true } end,         desc = 'Show Output (Neotest)', },
+  { map = '<leader>tO', cmd = function() require('neotest').output_panel.toggle() end,                                   desc = 'Toggle Output Panel (Neotest)', },
+
+  -- Test watching
+  { map = '<leader>tw', cmd = function() require('neotest').watch.toggle(vim.fn.expand '%') end,                         desc = 'Toggle Watch (Neotest)', },
+  { map = '<leader>tW', cmd = function() require('neotest').watch.toggle(vim.uv.cwd()) end,                              desc = 'Toggle Watch All (Neotest)', },
+
+  -- Test debugging
+  { map = '<leader>td', cmd = function() require('neotest').run.run { strategy = 'dap' } end,                            desc = 'Debug Nearest (Neotest)', },
+  { map = '<leader>tD', cmd = function() require('neotest').run.run { vim.fn.expand '%', strategy = 'dap' } end,         desc = 'Debug File (Neotest)', },
+
+  -- Test marks and targets
+  { map = '<leader>tm', cmd = function() require('neotest').run.run { suite = false, extra_args = { '--verbose' } } end, desc = 'Run Nearest with Args (Neotest)', },
+  { map = '<leader>tM', cmd = function() require('neotest').summary.run_marked() end,                                    desc = 'Run Marked Tests (Neotest)', },
+
+  -- Navigation
+  { map = ']t',         cmd = function() require('neotest').jump.next { status = 'failed' } end,                         desc = 'Next Failed Test', },
+  { map = '[t',         cmd = function() require('neotest').jump.prev { status = 'failed' } end,                         desc = 'Previous Failed Test', },
+}
