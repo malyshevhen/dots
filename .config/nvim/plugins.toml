@@ -1,0 +1,99 @@
+#:schema ./plugins-schema.json
+
+[[plugins]]
+name = "alpha-nvim"
+src  = "https://github.com/goolord/alpha-nvim"
+
+[[plugins]]
+name = "nvim-autopairs"
+src  = "https://github.com/windwp/nvim-autopairs"
+
+[[plugins]]
+name = "auto-session"
+src  = "https://github.com/rmagatti/auto-session"
+
+[[plugins]]
+name = "conform.nvim"
+src  = "https://github.com/stevearc/conform.nvim"
+
+[[plugins]]
+name = "diffview.nvim"
+src  = "https://github.com/sindrets/diffview.nvim"
+
+[[plugins]]
+name = "elixir-tools.nvim"
+src  = "https://github.com/elixir-tools/elixir-tools.nvim"
+
+[[plugins]]
+name = "gitsigns.nvim"
+src  = "https://github.com/lewis6991/gitsigns.nvim"
+
+[[plugins]]
+name = "LuaSnip"
+src  = "https://github.com/L3MON4D3/LuaSnip"
+
+[[plugins]]
+name = "mini.nvim"
+src  = "https://github.com/echasnovski/mini.nvim"
+
+[[plugins]]
+name = "neotest"
+src = "https://github.com/nvim-neotest/neotest"
+dependencies = [
+  "https://github.com/nvim-lua/plenary.nvim",
+  'https://github.com/nvim-neotest/nvim-nio',
+  'https://github.com/antoinemadec/FixCursorHold.nvim',
+  'https://github.com/fredrikaverpil/neotest-golang',
+  'https://github.com/jfpedroza/neotest-elixir',
+  'https://github.com/nvim-neotest/neotest-python',
+  'https://github.com/rcasia/neotest-java',
+  'https://github.com/nvim-neotest/neotest-jest',
+  'https://github.com/marilari88/neotest-vitest',
+]
+
+[[plugins]]
+name         = "nvim-jdtls"
+src          = "https://github.com/mfussenegger/nvim-jdtls"
+dependencies = ["https://github.com/nvim-lua/plenary.nvim"]
+
+[[plugins]]
+name = "rose-pine"
+src  = "https://github.com/rose-pine/neovim"
+
+[[plugins]]
+name = "slimline"
+src  = "https://github.com/sschleemilch/slimline.nvim"
+
+[[plugins]]
+name = "snacks.nvim"
+src  = "https://github.com/folke/snacks.nvim"
+
+[[plugins]]
+name = "supermaven.nvim"
+src  = "https://github.com/supermaven-inc/supermaven-nvim"
+
+[[plugins]]
+name = "nvim-treesitter-endwise"
+src  = "https://github.com/RRethy/nvim-treesitter-endwise"
+
+[[plugins]]
+name = "nvim-treesitter"
+src  = "https://github.com/nvim-treesitter/nvim-treesitter"
+
+[[plugins]]
+name         = "nvim-ufo"
+src          = "https://github.com/kevinhwang91/nvim-ufo"
+dependencies = ["https://github.com/kevinhwang91/promise-async"]
+
+[[plugins]]
+name = "vim-unimpaired"
+src  = "https://github.com/tpope/vim-unimpaired"
+
+[[plugins]]
+name = "trouble.nvim"
+src  = 'https://github.com/folke/trouble.nvim'
+
+[[plugins]]
+name    = "blink.cmp"
+src     = "https://github.com/Saghen/blink.cmp"
+version = 'v1.6.0'

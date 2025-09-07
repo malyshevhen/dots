@@ -1,6 +1,6 @@
 local M = {}
 
-local log = require 'utils.vim_logger'
+local log = require 'pm.utils.vim_logger'
 
 ---Build the library using the go compile.
 ---

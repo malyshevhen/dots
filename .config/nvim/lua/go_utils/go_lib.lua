@@ -1,6 +1,6 @@
 local M = {}
 
-local log = require 'utils.vim_logger'
+local log = require 'pm.utils.vim_logger'
 
 local build_utils = require 'go_utils.build_utils'
 
