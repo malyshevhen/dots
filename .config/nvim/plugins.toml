@@ -86,10 +86,6 @@ src          = "https://github.com/kevinhwang91/nvim-ufo"
 dependencies = ["https://github.com/kevinhwang91/promise-async"]
 
 [[plugins]]
-name = "vim-unimpaired"
-src  = "https://github.com/tpope/vim-unimpaired"
-
-[[plugins]]
 name = "trouble.nvim"
 src  = 'https://github.com/folke/trouble.nvim'
 

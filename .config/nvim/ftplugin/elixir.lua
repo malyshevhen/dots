@@ -1,10 +1,15 @@
-P:add('https://github.com/elixir-tools/elixir-tools.nvim', 'elixir', {
+vim.bo.expandtab = true
+vim.bo.shiftwidth = 2
+vim.bo.softtabstop = 2
+vim.bo.tabstop = 2
+
+require('elixir').setup {
   opts = {
     nextls = { enable = false },
     elixirls = { enable = true },
     projectionist = { enable = true },
   },
-})
+}
 
 -- stylua: ignore
 K:map {

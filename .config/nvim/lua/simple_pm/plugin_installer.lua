@@ -3,46 +3,48 @@ local M = {}
 
 local plugin_types = require 'simple_pm.plugin_types'
 local toml_parser = require 'simple_pm.toml_parser'
+local keymap = require 'simple_pm.keymap'
 
----Installs a single plugin using vim.plug.add
----@param plugin PluginSpec The plugin to install
-local function install_plugin(plugin)
-  -- Extract repo name for vim.plug.add
-  local repo_name = plugin_types.extract_repo_name(plugin.src)
-
-  -- Build the plugin spec for vim.plug.add
-  local plug_spec = {
-    url = plugin.src,
+---Converts a plugin spec to vim.pack format
+---@param plugin PluginSpec The plugin to convert
+---@return table pack_spec The vim.pack specification
+local function to_pack_spec(plugin)
+  local pack_spec = {
+    src = plugin.src,
   }
+
+  -- Add name if specified
+  if plugin.name then
+    pack_spec.name = plugin.name
+  end
 
   -- Add version if specified
   if plugin.version then
-    plug_spec.tag = plugin.version
+    pack_spec.version = plugin.version
   end
 
-  -- Add the plugin
-  vim.plug.add(repo_name, plug_spec)
+  return pack_spec
 end
 
----Installs all plugins from a flattened plugin list
+---Installs all plugins from a flattened plugin list using vim.pack.add
 ---@param plugins PluginSpec[] List of plugins to install
 local function install_plugins(plugins)
+  -- Convert all plugins to vim.pack format
+  local pack_specs = {}
   for _, plugin in ipairs(plugins) do
-    local success, err = pcall(install_plugin, plugin)
-    if not success then
-      vim.notify(
-        string.format('Failed to install plugin %s: %s', plugin.name or plugin.src, err),
-        vim.log.levels.ERROR
-      )
-    else
-      vim.notify(
-        string.format(
-          'Installed plugin: %s',
-          plugin.name or plugin_types.extract_repo_name(plugin.src)
-        ),
-        vim.log.levels.INFO
-      )
-    end
+    local pack_spec = to_pack_spec(plugin)
+    table.insert(pack_specs, pack_spec)
+  end
+
+  -- Install all plugins in one call with load=true to actually load them
+  local success, err = pcall(vim.pack.add, pack_specs, {
+    confirm = false,
+    load = true,
+  })
+  if not success then
+    vim.notify(string.format('Failed to install plugins: %s', err), vim.log.levels.ERROR)
+  else
+    vim.notify(string.format('Successfully installed %d plugins', #plugins), vim.log.levels.INFO)
   end
 end
 
@@ -72,14 +74,22 @@ local function source_directory(dirpath)
   end
 end
 
----Sets up the global keymap store for immediate keymap setting
+---Sets up the simplified keymap system with K:map compatibility
 local function setup_keymap_system()
-  local keymap = require 'simple_pm.keymap'
-  local compat = require 'simple_pm.compat'
+  -- Create a simple compatibility object for K:map interface
+  local K = {
+    map = function(_, keymaps)
+      local success_count, total_count = keymap.map(keymaps)
+      if total_count > 0 then
+        local level = success_count == total_count and vim.log.levels.DEBUG or vim.log.levels.WARN
+        vim.notify(string.format('Keymaps: %d/%d successful', success_count, total_count), level)
+      end
+      return _G.K -- Return self for method chaining
+    end,
+  }
 
-  -- Set up both the new system and compatibility layer
-  keymap.create_global_store()
-  compat.setup_global_compat()
+  -- Set up global K for compatibility
+  _G.K = K
 
   vim.notify('Simplified keymap system and compatibility layer initialized', vim.log.levels.DEBUG)
 end
@@ -94,14 +104,14 @@ local function source_config_files(config_root)
   local plugins_lua = config_root .. '/plugins.lua'
   source_lua_file(plugins_lua)
 
-  local plugins_dir = config_root .. '/plugins'
+  local plugins_dir = config_root .. '/lua/plugins'
   source_directory(plugins_dir)
 
   -- Source keybindings
   local keybindings_lua = config_root .. '/keybindings.lua'
   source_lua_file(keybindings_lua)
 
-  local keybindings_dir = config_root .. '/keybindings'
+  local keybindings_dir = config_root .. '/lua/keybindings'
   source_directory(keybindings_dir)
 end
 
@@ -180,8 +190,6 @@ end
 
 ---Test the simplified keymap system
 function M.test_keymaps()
-  local keymap = require 'simple_pm.keymap'
-
   -- Test setting some example keymaps
   local test_keymaps = {
     { map = '<leader>tt', cmd = ':echo "Test keymap works!"<CR>', desc = 'Test keymap' },
@@ -194,7 +202,7 @@ function M.test_keymaps()
     },
   }
 
-  local success_count, total_count = keymap.set_immediate(test_keymaps)
+  local success_count, total_count = keymap.map(test_keymaps)
   print(string.format('Test keymaps: %d/%d successful', success_count, total_count))
 end
 

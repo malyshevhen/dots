@@ -1,78 +1,74 @@
 ---@class SimplePM
 local M = {}
 
-local plugin_installer = require 'simple_pm.plugin_installer'
-local keymap = require 'simple_pm.keymap'
-local compat = require 'simple_pm.compat'
+local config_module = require 'simple_pm.config'
+local plugin_manager = require 'simple_pm.plugin_manager'
+local toml_parser = require 'simple_pm.toml_parser'
+local pack_installer = require 'simple_pm.pack_installer'
+local file_sourcer = require 'simple_pm.file_sourcer'
+local keymap_compat = require 'simple_pm.keymap_compat'
+local logger = require 'simple_pm.logger'
 
----Default configuration for the simple plugin manager
----@class SimplePMConfig
----@field plugins_toml_path string? Path to plugins.toml (defaults to config_root/plugins.toml)
----@field auto_source_configs boolean? Whether to automatically source config files (default: true)
----@field auto_setup_keymaps boolean? Whether to automatically setup keymap system (default: true)
----@field debug_mode boolean? Enable debug logging (default: false)
-
----@type SimplePMConfig
-local default_config = {
-  plugins_toml_path = nil,
-  auto_source_configs = true,
-  auto_setup_keymaps = true,
-  debug_mode = false,
-}
-
----Merges user config with defaults
----@param user_config SimplePMConfig? User configuration
----@return SimplePMConfig merged_config
-local function merge_config(user_config)
-  return vim.tbl_deep_extend('force', default_config, user_config or {})
-end
-
----Sets up logging level based on debug mode
----@param debug_mode boolean
-local function setup_logging(debug_mode)
-  if debug_mode then
-    vim.notify('Simple Plugin Manager: Debug mode enabled', vim.log.levels.INFO)
+---Sets up logging based on configuration
+---@param config SimplePMConfig
+local function setup_logging(config)
+  if config.debug_mode then
+    logger.enable_debug()
+    logger.info('Debug mode enabled', 'SimplePM')
   end
 end
 
----Sets up the keymap system
+---Sets up the keymap compatibility layer
 ---@param config SimplePMConfig
 local function setup_keymaps(config)
   if config.auto_setup_keymaps then
-    keymap.create_global_store()
-    compat.setup_global_compat()
-    if config.debug_mode then
-      vim.notify(
-        'Simple Plugin Manager: Keymap system and compatibility layer initialized',
-        vim.log.levels.DEBUG
-      )
-    end
+    keymap_compat.setup_global()
+    logger.debug('Keymap compatibility layer initialized', 'SimplePM')
   end
 end
 
+---Creates plugin manager with dependencies
+---@return PluginManager
+local function create_plugin_manager()
+  local dependencies = {
+    toml_parser = toml_parser,
+    pack_installer = pack_installer,
+    file_sourcer = file_sourcer,
+  }
+  return plugin_manager.new(dependencies)
+end
+
 ---Main initialization function
----@param user_config SimplePMConfig? Configuration options
+---@param user_config table? Configuration options
 ---@return boolean success True if initialization was successful
 function M.init(user_config)
-  local config = merge_config(user_config)
-
-  setup_logging(config.debug_mode)
-
-  -- Set up keymap system first (needed for config files that define keymaps)
-  setup_keymaps(config)
-
-  -- Install plugins and source configuration files
-  local success = pcall(plugin_installer.install_and_configure, config.plugins_toml_path)
-
-  if not success then
-    vim.notify('Simple Plugin Manager: Failed to initialize', vim.log.levels.ERROR)
+  -- Create and validate configuration
+  local config, config_error = config_module.create(user_config)
+  if not config then
+    logger.error('Configuration error: ' .. (config_error or 'Unknown error'), 'SimplePM')
     return false
   end
 
-  if config.debug_mode then
-    vim.notify('Simple Plugin Manager: Initialization complete', vim.log.levels.INFO)
+  -- Validate required files exist
+  local files_valid, file_error = config_module.validate_files_exists(config)
+  if not files_valid then
+    logger.error('File validation error: ' .. (file_error or 'Unknown error'), 'SimplePM')
+    return false
   end
 
+  setup_logging(config)
+  setup_keymaps(config)
+
+  -- Create plugin manager and run setup
+  local pm = create_plugin_manager()
+  local success, error_msg = pm:setup(config.plugins_toml_path, config.config_root)
+
+  if not success then
+    logger.error('Plugin manager setup failed: ' .. (error_msg or 'Unknown error'), 'SimplePM')
+    return false
+  end
+
+  logger.info('Initialization complete', 'SimplePM')
   return true
 end
 
@@ -80,49 +76,86 @@ end
 ---@param plugins_toml_path string? Path to plugins.toml file
 ---@return boolean success True if setup was successful
 function M.setup(plugins_toml_path)
-  return M.init {
-    plugins_toml_path = plugins_toml_path,
-    debug_mode = false,
-  }
+  local config, config_error = config_module.create_minimal(plugins_toml_path)
+  if not config then
+    logger.error('Setup configuration error: ' .. (config_error or 'Unknown error'), 'SimplePM')
+    return false
+  end
+  return M.init(config)
 end
 
 ---Setup with debug mode enabled
 ---@param plugins_toml_path string? Path to plugins.toml file
 ---@return boolean success True if setup was successful
 function M.setup_debug(plugins_toml_path)
-  return M.init {
-    plugins_toml_path = plugins_toml_path,
-    debug_mode = true,
-  }
+  local config, config_error = config_module.create_debug { plugins_toml_path = plugins_toml_path }
+  if not config then
+    logger.error(
+      'Debug setup configuration error: ' .. (config_error or 'Unknown error'),
+      'SimplePM'
+    )
+    return false
+  end
+  return M.init(config)
 end
 
----Get the keymap system for direct use
----@return table keymap_module The keymap module
+---Get the keymap compatibility system for direct use
+---@return table keymap_compat_module The keymap compatibility module
 function M.keymap()
-  return keymap
+  return keymap_compat
 end
 
----Get the plugin installer for direct use
----@return table installer_module The plugin installer module
-function M.installer()
-  return plugin_installer
+---Get a plugin manager instance for direct use
+---@return PluginManager plugin_manager_instance The plugin manager instance
+function M.manager()
+  return create_plugin_manager()
 end
 
 ---Create user commands for debugging and management
 local function create_user_commands()
   -- Debug command to show parsed plugins
   vim.api.nvim_create_user_command('SimplePMDebugPlugins', function()
-    plugin_installer.debug_plugins()
+    local config_root = vim.fn.stdpath 'config'
+    local plugins_toml_path = config_root .. '/plugins.toml'
+    local pm = create_plugin_manager()
+    local plugins, error_msg = pm:debug_plugins(plugins_toml_path)
+    if not plugins then
+      logger.error('Debug plugins failed: ' .. (error_msg or 'Unknown error'), 'SimplePM')
+    end
   end, { desc = 'Show parsed plugins from plugins.toml' })
 
-  -- Test keymap system
+  -- Test keymap compatibility system
   vim.api.nvim_create_user_command('SimplePMTestKeymaps', function()
-    plugin_installer.test_keymaps()
-  end, { desc = 'Test the simplified keymap system' })
+    if keymap_compat.is_active() then
+      logger.info('Keymap compatibility system is active', 'SimplePM')
+      -- Test with sample keymap
+      local K = keymap_compat.get_global()
+      if K then
+        K:map {
+          {
+            map = '<leader>test',
+            cmd = ':echo "SimplePM test successful!"<CR>',
+            desc = 'Test keymap',
+          },
+        }
+        logger.info('Test keymap created successfully', 'SimplePM')
+      end
+    else
+      logger.warn('Keymap compatibility system is not active', 'SimplePM')
+    end
+  end, { desc = 'Test the keymap compatibility system' })
 
   -- Reinstall plugins
   vim.api.nvim_create_user_command('SimplePMReinstall', function()
-    plugin_installer.install_and_configure()
+    local config_root = vim.fn.stdpath 'config'
+    local plugins_toml_path = config_root .. '/plugins.toml'
+    local pm = create_plugin_manager()
+    local success, error_msg = pm:setup(plugins_toml_path, config_root)
+    if success then
+      logger.info('Reinstall completed successfully', 'SimplePM')
+    else
+      logger.error('Reinstall failed: ' .. (error_msg or 'Unknown error'), 'SimplePM')
+    end
   end, { desc = 'Reinstall plugins and source configuration' })
 end
 

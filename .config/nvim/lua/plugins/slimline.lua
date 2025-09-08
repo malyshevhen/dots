@@ -1,3 +1,0 @@
-P:add('https://github.com/sschleemilch/slimline.nvim', 'slimline', {
-  opts = { style = 'fg' },
-})

@@ -5,6 +5,7 @@ A streamlined plugin management system for Neovim that replaces complex plugin m
 ## Overview
 
 This system provides:
+
 - **TOML-based plugin definition** - All plugins defined in `plugins.toml`
 - **Immediate keymap setting** - No collecting, keymaps are set instantly when declared
 - **Compatibility layer** - Existing `K:map` syntax continues to work
@@ -19,9 +20,8 @@ lua/simple_pm/
 ├── init.lua            # Main module interface
 ├── plugin_types.lua    # Type definitions for plugins
 ├── toml_parser.lua     # TOML file parser
-├── plugin_installer.lua # Plugin installation logic
-├── keymap.lua          # Simplified keymap system
-└── compat.lua          # Compatibility layer for K:map
+├── plugin_installer.lua # Plugin installation logic (includes K:map compatibility)
+└── keymap.lua          # Simplified keymap system
 ```
 
 ## Core Components
@@ -49,15 +49,17 @@ dependencies = [
 Keymaps are set immediately when declared, not collected and batched:
 
 **New Direct API:**
+
 ```lua
-local simple_pm = require('simple_pm')
-simple_pm.keymap().set_immediate({
+local keymap = require('simple_pm.keymap')
+keymap.map({
   { map = '<leader>ff', cmd = '<cmd>Telescope find_files<CR>', desc = 'Find files' },
   { map = '<leader>w', cmd = '<cmd>w<CR>', desc = 'Save file' },
 })
 ```
 
 **Compatible K:map API (existing code continues to work):**
+
 ```lua
 K:map {
   { map = '<leader>ff', cmd = '<cmd>Telescope find_files<CR>', desc = 'Find files' },
@@ -68,6 +70,7 @@ K:map {
 ### 3. Automatic Configuration Sourcing
 
 After plugin installation, files are automatically sourced in order:
+
 1. `plugins.lua` or `plugins/*.lua` files
 2. `keybindings.lua` or `keybindings/*.lua` files
 
@@ -114,6 +117,7 @@ simple_pm.setup_debug() -- Enables detailed logging
 ### Plugin Configuration
 
 **Option 1: Single file** (`plugins.lua`):
+
 ```lua
 -- Configure rose-pine theme
 require('rose-pine').setup({
@@ -129,6 +133,7 @@ require('nvim-treesitter.configs').setup({
 ```
 
 **Option 2: Directory** (`plugins/theme.lua`, `plugins/editor.lua`, etc.):
+
 ```lua
 -- plugins/theme.lua
 require('rose-pine').setup({
@@ -140,6 +145,7 @@ vim.cmd('colorscheme rose-pine')
 ### Keybinding Configuration
 
 **Option 1: Single file** (`keybindings.lua`):
+
 ```lua
 -- Set leader key
 vim.g.mapleader = ' '
@@ -152,6 +158,7 @@ K:map {
 ```
 
 **Option 2: Directory** (`keybindings/editor.lua`, `keybindings/git.lua`, etc.):
+
 ```lua
 -- keybindings/editor.lua
 K:map {
@@ -177,21 +184,25 @@ K:map {
 ### Examples
 
 **Basic keymap:**
+
 ```lua
 { map = '<leader>w', cmd = '<cmd>w<CR>', desc = 'Save file' }
 ```
 
 **Function command:**
+
 ```lua
 { map = '<leader>f', cmd = function() print('Hello!') end, desc = 'Say hello' }
 ```
 
 **Multiple modes:**
+
 ```lua
 { map = '<leader>y', cmd = '"+y', desc = 'Copy to clipboard', mode = { 'n', 'v' } }
 ```
 
 **Filetype-specific:**
+
 ```lua
 { map = '<leader>r', cmd = '<cmd>GoRun<CR>', desc = 'Run Go file', ft = 'go' }
 ```
@@ -233,44 +244,42 @@ simple_pm.installer()         -- Get plugin installer module
 local keymap = require('simple_pm.keymap')
 
 -- Direct keymap setting
-keymap.set_immediate(keymaps) -- Set keymaps immediately
-keymap.map(keymaps)          -- Use global store
-
--- Store management
-keymap.create_global_store()  -- Create global K store
-keymap.get_global_store()    -- Get existing store
+keymap.map(keymaps)          -- Set keymaps immediately
 ```
 
 ## Advantages
 
 - **Immediate feedback** - Keymaps work as soon as they're defined
 - **No batching complexity** - Simple, direct keymap setting
-- **Full compatibility** - Existing `K:map` code works unchanged
+- **Full compatibility** - Existing `K:map` code works unchanged (built into plugin_installer)
 - **Type safety** - Built-in validation for plugins and keymaps
-- **Standard tools** - Uses `vim.plug.add` and `vim.keymap.set`
+- **Standard tools** - Uses `vim.pack.add` and `vim.keymap.set`
 - **Clear separation** - Plugin definition vs. configuration vs. keybindings
-- **Maintainable** - Simple, readable code structure
+- **Minimal architecture** - Only essential components, no unnecessary abstractions
 
 ## Performance
 
-- **Fast startup** - No complex dependency resolution
-- **Immediate keymaps** - No collection/batch processing overhead
+- **Fast startup** - No complex dependency resolution or abstractions
+- **Immediate keymaps** - Direct vim.keymap.set calls, no intermediate storage
 - **Efficient parsing** - TOML parsed once at startup
-- **Minimal memory** - No persistent keymap storage
+- **Minimal memory** - No persistent stores or compatibility layers
 
 ## Troubleshooting
 
 ### Check Plugin Parsing
+
 ```vim
 :SimplePMDebugPlugins
 ```
 
 ### Test Keymap System
+
 ```vim
 :SimplePMTestKeymaps
 ```
 
 ### Enable Debug Mode
+
 ```lua
 require('simple_pm').init({ debug_mode = true })
 ```
@@ -284,4 +293,4 @@ require('simple_pm').init({ debug_mode = true })
 
 ---
 
-*This system prioritizes simplicity, immediate feedback, and maintainability over complex features.*
+_This system prioritizes simplicity and directness: one `keymap.map()` function that validates and sets keymaps immediately using `vim.keymap.set`._

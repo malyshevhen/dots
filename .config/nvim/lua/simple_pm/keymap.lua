@@ -9,9 +9,6 @@ local M = {}
 ---@field ft string? Filetype restriction
 ---@field opts table? Additional options for vim.keymap.set
 
----Global keymap store instance
-local K = nil
-
 ---Validates a keymap specification
 ---@param keymap KeymapSpec The keymap to validate
 ---@return boolean valid True if the keymap is valid
@@ -59,10 +56,10 @@ local function validate_keymap(keymap)
   return true, nil
 end
 
----Sets a single keymap immediately
+---Sets a single keymap using vim.keymap.set
 ---@param keymap KeymapSpec The keymap to set
 ---@return boolean success True if the keymap was set successfully
-local function set_keymap(keymap)
+local function set_single_keymap(keymap)
   local valid, err = validate_keymap(keymap)
   if not valid then
     vim.notify(string.format('Invalid keymap: %s', err), vim.log.levels.WARN)
@@ -70,6 +67,7 @@ local function set_keymap(keymap)
   end
 
   -- Default mode to normal if not specified
+  -- vim.keymap.set accepts both string and string[] for mode
   local mode = keymap.mode or 'n'
 
   -- Build options table
@@ -80,7 +78,7 @@ local function set_keymap(keymap)
 
   -- Handle filetype-specific keymaps
   if keymap.ft then
-    -- Create an autocommand for filetype-specific keymaps
+    -- Create an auto command for filetype-specific keymaps
     vim.api.nvim_create_autocmd('FileType', {
       pattern = keymap.ft,
       callback = function(args)
@@ -101,74 +99,11 @@ local function set_keymap(keymap)
   return true
 end
 
----@class SimpleKeymapStore
-local KeymapStore = {}
-KeymapStore.__index = KeymapStore
-
----Creates a new keymap store
----@return SimpleKeymapStore
-function KeymapStore.new()
-  return setmetatable({}, KeymapStore)
-end
-
----Maps keymaps immediately without collecting them
----@param keymaps KeymapSpec|KeymapSpec[] Single keymap or array of keymaps
----@return number success_count Number of successfully set keymaps
----@return number total_count Total number of keymaps attempted
-function KeymapStore:map(keymaps)
-  local success_count = 0
-  local total_count = 0
-
-  -- Handle single keymap or array of keymaps
-  if keymaps.map then
-    -- Single keymap (has .map field)
-    total_count = 1
-    if set_keymap(keymaps) then
-      success_count = 1
-    end
-  else
-    -- Array of keymaps
-    for _, keymap in ipairs(keymaps) do
-      total_count = total_count + 1
-      if set_keymap(keymap) then
-        success_count = success_count + 1
-      end
-    end
-  end
-
-  return success_count, total_count
-end
-
----Creates and returns the global keymap store instance
----@return SimpleKeymapStore
-function M.create_global_store()
-  if not K then
-    K = KeymapStore.new()
-    _G.K = K
-  end
-  return K
-end
-
----Gets the global keymap store instance
----@return SimpleKeymapStore?
-function M.get_global_store()
-  return K or _G.K
-end
-
----Convenience function to map keymaps using the global store
+---Maps keymaps immediately using vim.keymap.set
 ---@param keymaps KeymapSpec|KeymapSpec[] Single keymap or array of keymaps
 ---@return number success_count Number of successfully set keymaps
 ---@return number total_count Total number of keymaps attempted
 function M.map(keymaps)
-  local store = M.get_global_store() or M.create_global_store()
-  return store:map(keymaps)
-end
-
----Directly sets keymaps without using the store (for immediate use)
----@param keymaps KeymapSpec|KeymapSpec[] Single keymap or array of keymaps
----@return number success_count Number of successfully set keymaps
----@return number total_count Total number of keymaps attempted
-function M.set_immediate(keymaps)
   local success_count = 0
   local total_count = 0
 
@@ -176,14 +111,14 @@ function M.set_immediate(keymaps)
   if keymaps.map then
     -- Single keymap (has .map field)
     total_count = 1
-    if set_keymap(keymaps) then
+    if set_single_keymap(keymaps) then
       success_count = 1
     end
   else
     -- Array of keymaps
     for _, keymap in ipairs(keymaps) do
       total_count = total_count + 1
-      if set_keymap(keymap) then
+      if set_single_keymap(keymap) then
         success_count = success_count + 1
       end
     end
