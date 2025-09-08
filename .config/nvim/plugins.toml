@@ -5,10 +5,6 @@ name = "alpha-nvim"
 src  = "https://github.com/goolord/alpha-nvim"
 
 [[plugins]]
-name = "nvim-autopairs"
-src  = "https://github.com/windwp/nvim-autopairs"
-
-[[plugins]]
 name = "auto-session"
 src  = "https://github.com/rmagatti/auto-session"
 
@@ -93,3 +89,7 @@ src  = 'https://github.com/folke/trouble.nvim'
 name    = "blink.cmp"
 src     = "https://github.com/Saghen/blink.cmp"
 version = 'v1.6.0'
+
+[[plugins]]
+name = "vim-illuminate"
+src  = "https://github.com/RRethy/vim-illuminate"
