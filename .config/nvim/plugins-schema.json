@@ -11,9 +11,45 @@
       "items": {
         "$ref": "#/definitions/plugin"
       }
+    },
+    "language_servers": {
+      "type": "object",
+      "description": "Configuration for language servers to be enabled.",
+      "properties": {
+        "servers": {
+          "type": "array",
+          "description": "A list of LSP server names to enable.",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "filetypes": {
+      "type": "object",
+      "description": "Configuration for custom filetype mappings.",
+      "properties": {
+        "pattern": {
+          "type": "object",
+          "description": "A map of file patterns to filetypes.",
+          "propertyNames": {
+            "type": "string",
+            "description": "A glob pattern for a filename."
+          },
+          "additionalProperties": {
+            "type": "string",
+            "description": "The filetype to assign."
+          }
+        }
+      },
+      "additionalProperties": false
     }
   },
-  "required": ["plugins"],
+  "required": [
+    "plugins"
+  ],
   "definitions": {
     "plugin": {
       "type": "object",
@@ -33,7 +69,12 @@
         "version": {
           "type": "string",
           "description": "String to use specific branch, tag, or commit hash.",
-          "examples": ["master", "main", "v1.0.0", "stable"]
+          "examples": [
+            "master",
+            "main",
+            "v1.0.0",
+            "stable"
+          ]
         },
         "dependencies": {
           "type": "array",
@@ -46,7 +87,9 @@
           "uniqueItems": true
         }
       },
-      "required": ["src"],
+      "required": [
+        "src"
+      ],
       "additionalProperties": false
     }
   },
@@ -58,19 +101,25 @@
           "src": "https://github.com/goolord/alpha-nvim"
         },
         {
-          "name": "blink.cmp",
-          "src": "https://github.com/Saghen/blink.cmp",
-          "version": "v1.6.0"
-        },
-        {
           "name": "neotest",
           "src": "https://github.com/nvim-neotest/neotest",
           "dependencies": [
-            "https://github.com/nvim-lua/plenary.nvim",
-            "https://github.com/nvim-neotest/nvim-nio"
+            "https://github.com/nvim-lua/plenary.nvim"
           ]
         }
-      ]
+      ],
+      "language_servers": {
+        "servers": [
+          "lua_ls",
+          "gopls"
+        ]
+      },
+      "filetypes": {
+        "pattern": {
+          "*.raml": "raml",
+          "docker-compose%.yml": "yaml.docker-compose"
+        }
+      }
     }
   ]
 }

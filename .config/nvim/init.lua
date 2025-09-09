@@ -61,20 +61,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
---------------------------------------------------------------------------------
--------------------------------- FILETYPES -------------------------------------
---------------------------------------------------------------------------------
 
---- Add filetype mapping --- TODO: move to plugins.toml
-vim.filetype.add {
-  pattern = {
-    ['docker-compose%.yml'] = 'yaml.docker-compose',
-    ['docker-compose%.yaml'] = 'yaml.docker-compose',
-    ['compose%.yml'] = 'yaml.docker-compose',
-    ['compose%.yaml'] = 'yaml.docker-compose',
-    ['*.raml'] = 'raml',
-  },
-}
 
 --------------------------------------------------------------------------------
 -------------------------------- LSP -------------------------------------------

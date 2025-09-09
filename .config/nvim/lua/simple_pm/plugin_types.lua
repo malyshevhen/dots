@@ -7,6 +7,7 @@
 ---@class PluginConfig
 ---@field plugins PluginSpec[] Array of plugin configurations
 ---@field language_servers table? Configuration for language servers
+---@field filetypes table? Configuration for filetype mappings
 
 ---@alias PluginList PluginSpec[]
 
@@ -89,6 +90,15 @@ function M.validate_config(config)
           return false, string.format('Server at index %d must be a string', i)
         end
       end
+    end
+  end
+
+  if config.filetypes then
+    if type(config.filetypes) ~= 'table' then
+      return false, "'filetypes' must be a table"
+    end
+    if config.filetypes.pattern and type(config.filetypes.pattern) ~= 'table' then
+      return false, "'filetypes.pattern' must be a table"
     end
   end
 
