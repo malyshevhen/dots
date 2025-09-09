@@ -1,5 +1,6 @@
 ---@class SimplePMConfig
 ---@field plugins_toml_path string? Path to plugins.toml file (nil will default to config_root/plugins.toml)
+---@field lock_file_path string? Path to the lock file
 ---@field auto_source_configs boolean Whether to automatically source config files
 ---@field auto_setup_keymaps boolean Whether to automatically setup keymap system
 ---@field debug_mode boolean Enable debug logging
@@ -12,6 +13,7 @@ local M = {}
 ---@type SimplePMConfig
 local DEFAULT_CONFIG = {
   plugins_toml_path = nil, -- Will be set to config_root/plugins.toml if nil
+  lock_file_path = vim.fn.stdpath('data') .. '/simple_pm.lock',
   auto_source_configs = true,
   auto_setup_keymaps = true,
   debug_mode = false,
@@ -30,6 +32,10 @@ local function validate_config(config)
   -- Validate required fields and types
   if config.plugins_toml_path ~= nil and type(config.plugins_toml_path) ~= 'string' then
     return false, 'plugins_toml_path must be a string or nil'
+  end
+
+  if config.lock_file_path ~= nil and type(config.lock_file_path) ~= 'string' then
+    return false, 'lock_file_path must be a string or nil'
   end
 
   if type(config.auto_source_configs) ~= 'boolean' then
@@ -64,6 +70,10 @@ local function resolve_config(config)
   -- Set default plugins.toml path if not provided
   if not resolved.plugins_toml_path then
     resolved.plugins_toml_path = resolved.config_root .. '/plugins.toml'
+  end
+
+  if not resolved.lock_file_path then
+    resolved.lock_file_path = vim.fn.stdpath('data') .. '/simple_pm.lock'
   end
 
   return resolved

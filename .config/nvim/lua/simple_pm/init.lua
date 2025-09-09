@@ -8,6 +8,8 @@ local pack_installer = require 'simple_pm.pack_installer'
 local file_sourcer = require 'simple_pm.file_sourcer'
 local keymap_compat = require 'simple_pm.keymap_compat'
 local logger = require 'simple_pm.logger'
+local crypto = require 'simple_pm.crypto'
+local lock_manager_module = require 'simple_pm.lock_manager'
 
 ---Sets up logging based on configuration
 ---@param config SimplePMConfig
@@ -34,6 +36,11 @@ local function create_plugin_manager()
     toml_parser = toml_parser,
     pack_installer = pack_installer,
     file_sourcer = file_sourcer,
+    crypto = crypto,
+    lock_manager = lock_manager_module.new {
+      toml_parser = toml_parser,
+      crypto = crypto,
+    },
   }
   return plugin_manager.new(dependencies)
 end
@@ -61,7 +68,7 @@ function M.init(user_config)
 
   -- Create plugin manager and run setup
   local pm = create_plugin_manager()
-  local success, error_msg = pm:setup(config.plugins_toml_path, config.config_root)
+  local success, error_msg = pm:setup(config)
 
   if not success then
     logger.error('Plugin manager setup failed: ' .. (error_msg or 'Unknown error'), 'SimplePM')
@@ -147,10 +154,14 @@ local function create_user_commands()
 
   -- Reinstall plugins
   vim.api.nvim_create_user_command('SimplePMReinstall', function()
-    local config_root = vim.fn.stdpath 'config'
-    local plugins_toml_path = config_root .. '/plugins.toml'
+    local config, config_error = config_module.create()
+    if not config then
+      logger.error('Could not create config for reinstall: ' .. (config_error or 'unknown'), 'SimplePM')
+      return
+    end
+
     local pm = create_plugin_manager()
-    local success, error_msg = pm:setup(plugins_toml_path, config_root)
+    local success, error_msg = pm:setup(config, true)
     if success then
       logger.info('Reinstall completed successfully', 'SimplePM')
     else

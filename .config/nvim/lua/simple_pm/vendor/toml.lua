@@ -611,9 +611,8 @@ TOML.encode = function(tbl)
         v = v:gsub('\b', '\\b')
         v = v:gsub('\t', '\\t')
         v = v:gsub('\f', '\\f')
-        v = v:gsub('\r', '\\r')
-        v = v:gsub('"', '\\"')
-        v = v:gsub('/', '\\/')
+        v = v:gsub('\r', '\r')
+        v = v:gsub('"', '"')
         toml = toml .. k .. ' = ' .. quote .. v .. quote .. '\n'
       elseif type(v) == 'table' then
         local array, arrayTable = true, true
@@ -633,16 +632,15 @@ TOML.encode = function(tbl)
           if arrayTable then
             -- double bracket syntax go!
             table.insert(cache, k)
-            for kk, vv in pairs(v) do
+            for _, vv in ipairs(v) do
               toml = toml .. '[[' .. table.concat(cache, '.') .. ']]\n'
+              local current_plugin_props = {}
               for k3, v3 in pairs(vv) do
                 if type(v3) ~= 'table' then
-                  vv[k3] = nil
-                  first[k3] = v3
+                  current_plugin_props[k3] = v3
                 end
               end
-              parse(first)
-              parse(vv)
+              parse(current_plugin_props)
             end
             table.remove(cache)
           else
