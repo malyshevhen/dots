@@ -646,8 +646,13 @@ TOML.encode = function(tbl)
           else
             -- plain ol boring array
             toml = toml .. k .. ' = [\n'
-            for kk, vv in pairs(first) do
-              toml = toml .. tostring(vv) .. ',\n'
+            for _, val in ipairs(first) do
+              if type(val) == 'string' then
+                local escaped_val = val:gsub('\\', '\\\\'):gsub('"', '\\"')
+                toml = toml .. '  "' .. escaped_val .. '",\n'
+              else
+                toml = toml .. '  ' .. tostring(val) .. ',\n'
+              end
             end
             toml = toml .. ']\n'
           end

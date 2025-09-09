@@ -135,6 +135,21 @@ function PluginManager:source_configs(config_root)
   return success, error_msg
 end
 
+---Enables language servers
+---@param ls_config table Language server configuration
+function PluginManager:enable_language_servers(ls_config)
+  if not ls_config or not ls_config.servers or #ls_config.servers == 0 then
+    self.logger.info('No language servers to enable.')
+    return
+  end
+
+  self.logger.info('Enabling ' .. #ls_config.servers .. ' language servers.')
+  local success, err = pcall(vim.lsp.enable, ls_config.servers)
+  if not success then
+    self.logger.error('Failed to enable language servers: ' .. tostring(err))
+  end
+end
+
 ---Main method to install plugins and configure the system
 ---@param config SimplePMConfig The full configuration object
 ---@param force_reinstall boolean? Whether to ignore the lock file and force reinstall
@@ -151,22 +166,31 @@ function PluginManager:setup(config, force_reinstall)
   end
 
   local lock_data = self.dependencies.lock_manager:read(config.lock_file_path)
+  self.logger.debug('Read lock_data: ' .. vim.inspect(lock_data))
+
   local is_stale = self.dependencies.lock_manager:is_stale(plugins_toml_content, lock_data)
 
   local flattened_plugins
-  local log_message
+  local language_servers_config
 
   if not force_reinstall and not is_stale and lock_data and lock_data.plugins then
     self.logger.info('Lock file is up to date. Verifying plugins from lock file.')
     flattened_plugins = lock_data.plugins
-    log_message = string.format('Verifying and loading %d plugins...', #flattened_plugins)
+    language_servers_config = lock_data.language_servers
   else
     self.logger.info('Lock file is stale or missing. Installing/updating plugins.')
-    local plugin_config, parse_error = self:parse_config(config.plugins_toml_path)
-    if not plugin_config then
+    local parsed_config, parse_error = self:parse_config(config.plugins_toml_path)
+    if not parsed_config then
       return false, parse_error
     end
-    flattened_plugins = self:flatten_plugins(plugin_config)
+    flattened_plugins = self:flatten_plugins(parsed_config)
+    language_servers_config = parsed_config.language_servers
+  end
+
+  self.logger.debug('Using plugin_config: ' .. vim.inspect({ plugins = flattened_plugins, language_servers = language_servers_config }))
+
+  local log_message = string.format('Verifying and loading %d plugins...', #flattened_plugins)
+  if force_reinstall or is_stale then
     log_message = string.format('Installing %d plugins...', #flattened_plugins)
   end
 
@@ -213,7 +237,9 @@ function PluginManager:setup(config, force_reinstall)
     local new_lock_data = {
       hash = new_hash,
       plugins = plugins_for_lock,
+      language_servers = language_servers_config,
     }
+    self.logger.debug('Writing new_lock_data: ' .. vim.inspect(new_lock_data))
     local ok, write_err = self.dependencies.lock_manager:write(config.lock_file_path, new_lock_data)
     if not ok then
       self.logger.error('Failed to write lock file: ' .. (write_err or 'unknown error'))
@@ -229,6 +255,8 @@ function PluginManager:setup(config, force_reinstall)
   if not source_success then
     return false, source_error
   end
+
+  self:enable_language_servers(language_servers_config)
 
   self.logger.info '--- PluginManager Setup Finished ---'
   return true, nil

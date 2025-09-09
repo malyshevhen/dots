@@ -6,6 +6,7 @@
 
 ---@class PluginConfig
 ---@field plugins PluginSpec[] Array of plugin configurations
+---@field language_servers table? Configuration for language servers
 
 ---@alias PluginList PluginSpec[]
 
@@ -72,6 +73,22 @@ function M.validate_config(config)
     local valid, err = M.validate_plugin(plugin)
     if not valid then
       return false, string.format('Plugin at index %d: %s', i, err)
+    end
+  end
+
+  if config.language_servers then
+    if type(config.language_servers) ~= 'table' then
+      return false, "'language_servers' must be a table"
+    end
+    if config.language_servers.servers and type(config.language_servers.servers) ~= 'table' then
+      return false, "'language_servers.servers' must be an array"
+    end
+    if config.language_servers.servers then
+      for i, server in ipairs(config.language_servers.servers) do
+        if type(server) ~= 'string' then
+          return false, string.format('Server at index %d must be a string', i)
+        end
+      end
     end
   end
 

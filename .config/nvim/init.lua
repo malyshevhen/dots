@@ -1,7 +1,6 @@
 --------------------------------------------------------------------------------
 -------------------------------- INIT ------------------------------------------
 --------------------------------------------------------------------------------
-
 local simple_pm = require 'simple_pm'
 
 -- Set up the plugin management system with automatic configuration sourcing
@@ -80,22 +79,6 @@ vim.filetype.add {
 --------------------------------------------------------------------------------
 -------------------------------- LSP -------------------------------------------
 --------------------------------------------------------------------------------
-
--- TODO: move to plugins.toml
-vim.lsp.enable {
-  'lua_ls',
-  'basedpyright',
-  'ruff',
-  'gopls',
-  'jsonls',
-  'yamlls',
-  'taplo',
-  'codebook',
-  'shellcheck',
-  'jdtls',
-  'dockerls',
-  'gleam',
-}
 
 --------------------------------------------------------------------------------
 -------------------------------- DIAGNOSTICS -----------------------------------
@@ -857,4 +840,9 @@ K:map {
   -- Ufo
   { map = 'zR',              cmd = function() require('ufo').openAllFolds() end,                                              desc = 'Open all folds', },
   { map = 'zM',              cmd = function() require('ufo').closeAllFolds() end,                                             desc = 'Close all folds', },
+
+  -- Gemini
+  { map = "<leader>a/",      cmd = "<cmd>Gemini toggle<cr>",                                                                  desc = "Toggle Gemini CLI" },
+  { map = "<leader>aa",      cmd = "<cmd>Gemini ask<cr>",                                                                     desc = "Ask Gemini",                      mode = { "n", "v" } },
+  { map = "<leader>af",      cmd = "<cmd>Gemini add_file<cr>",                                                                desc = "Add File" },
 }

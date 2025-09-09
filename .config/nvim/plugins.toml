@@ -93,3 +93,23 @@ version = 'v1.6.0'
 [[plugins]]
 name = "vim-illuminate"
 src  = "https://github.com/RRethy/vim-illuminate"
+
+[[plugins]]
+name = "gemini-cli.nvim"
+src  = "https://github.com/marcinjahn/gemini-cli.nvim"
+
+[language_servers]
+servers = [
+  "lua_ls",
+  "basedpyright",
+  "ruff",
+  "gopls",
+  "jsonls",
+  "yamlls",
+  "taplo",
+  "codebook",
+  "shellcheck",
+  "jdtls",
+  "dockerls",
+  "gleam",
+]

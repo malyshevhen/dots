@@ -103,6 +103,7 @@ function M.parse_plugins_toml(filepath)
 
   return {
     plugins = data.plugins,
+    language_servers = data.language_servers,
   }
 end
 

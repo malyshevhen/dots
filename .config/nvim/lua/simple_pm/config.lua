@@ -14,7 +14,7 @@ local M = {}
 ---@type SimplePMConfig
 local DEFAULT_CONFIG = {
   plugins_toml_path = nil, -- Will be set to config_root/plugins.toml if nil
-  lock_file_path = vim.fn.stdpath('data') .. '/simple_pm.lock',
+  lock_file_path = vim.fn.stdpath 'data' .. '/simple_pm.lock',
   auto_source_configs = true,
   auto_setup_keymaps = true,
   show_startup_messages = false,
@@ -79,7 +79,7 @@ local function resolve_config(config)
   end
 
   if not resolved.lock_file_path then
-    resolved.lock_file_path = vim.fn.stdpath('data') .. '/simple_pm.lock'
+    resolved.lock_file_path = vim.fn.stdpath 'data' .. '/simple_pm.lock'
   end
 
   return resolved
@@ -154,3 +154,4 @@ function M.get_defaults()
 end
 
 return M
+
