@@ -3,6 +3,7 @@
 ---@field lock_file_path string? Path to the lock file
 ---@field auto_source_configs boolean Whether to automatically source config files
 ---@field auto_setup_keymaps boolean Whether to automatically setup keymap system
+---@field show_startup_messages boolean Whether to show startup messages
 ---@field debug_mode boolean Enable debug logging
 ---@field config_root string Root directory of the neovim config
 
@@ -16,6 +17,7 @@ local DEFAULT_CONFIG = {
   lock_file_path = vim.fn.stdpath('data') .. '/simple_pm.lock',
   auto_source_configs = true,
   auto_setup_keymaps = true,
+  show_startup_messages = false,
   debug_mode = false,
   config_root = vim.fn.stdpath 'config',
 }
@@ -44,6 +46,10 @@ local function validate_config(config)
 
   if type(config.auto_setup_keymaps) ~= 'boolean' then
     return false, 'auto_setup_keymaps must be a boolean'
+  end
+
+  if type(config.show_startup_messages) ~= 'boolean' then
+    return false, 'show_startup_messages must be a boolean'
   end
 
   if type(config.debug_mode) ~= 'boolean' then

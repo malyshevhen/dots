@@ -9,17 +9,16 @@ local LOG_LEVELS = {
   ERROR = 4,
 }
 
----@class LoggerConfig
----@field enabled boolean Whether logging is enabled
----@field level LogLevel Minimum log level to output
----@field prefix string Prefix for log messages
-
 ---@type LoggerConfig
 local config = {
   enabled = true,
   level = LOG_LEVELS.INFO,
   prefix = '[SimplePM]',
+  show_notifications = true, -- Show vim.notify messages
 }
+
+---@type string[]
+local log_history = {}
 
 ---Maps log levels to vim.log.levels
 local VIM_LOG_LEVELS = {
@@ -59,13 +58,18 @@ end
 ---@param message string The message to log
 ---@param context string? Optional context information
 local function log(level, message, context)
-  if not config.enabled or level < config.level then
+  if not config.enabled then
     return
   end
 
   local formatted = format_message(level, message, context)
-  local vim_level = VIM_LOG_LEVELS[level]
+  table.insert(log_history, formatted)
 
+  if level < config.level or not config.show_notifications then
+    return
+  end
+
+  local vim_level = VIM_LOG_LEVELS[level]
   vim.notify(formatted, vim_level)
 end
 
@@ -116,6 +120,17 @@ function M.error(message, context)
   log(LOG_LEVELS.ERROR, message, context)
 end
 
+---Gets the log history
+---@return string[]
+function M.get_history()
+  return log_history
+end
+
+---Clears the log history
+function M.clear_history()
+  log_history = {}
+end
+
 ---Creates a contextual logger that automatically includes context
 ---@param context string The context for all log messages
 ---@return table contextual_logger Logger with automatic context
@@ -134,32 +149,6 @@ function M.create_context(context)
       M.error(message, context)
     end,
   }
-end
-
----Logs the start of an operation and returns a function to log completion
----@param operation string The operation being performed
----@param context string? Optional context information
----@return function completion_logger Function to call when operation completes
-function M.operation(operation, context)
-  M.info(string.format('Starting: %s', operation), context)
-
-  local start_time = vim.loop.hrtime()
-
-  return function(success, result)
-    local duration_ms = (vim.loop.hrtime() - start_time) / 1000000
-    local status = success and 'completed' or 'failed'
-    local message = string.format('%s %s (%.2fms)', operation, status, duration_ms)
-
-    if result then
-      message = string.format('%s: %s', message, result)
-    end
-
-    if success then
-      M.info(message, context)
-    else
-      M.error(message, context)
-    end
-  end
 end
 
 ---Exposes log levels for external use

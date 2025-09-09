@@ -14,8 +14,11 @@ local lock_manager_module = require 'simple_pm.lock_manager'
 ---Sets up logging based on configuration
 ---@param config SimplePMConfig
 local function setup_logging(config)
+  logger.configure {
+    level = config.debug_mode and logger.levels.DEBUG or logger.levels.INFO,
+    show_notifications = config.show_startup_messages,
+  }
   if config.debug_mode then
-    logger.enable_debug()
     logger.info('Debug mode enabled', 'SimplePM')
   end
 end
@@ -52,9 +55,12 @@ function M.init(user_config)
   -- Create and validate configuration
   local config, config_error = config_module.create(user_config)
   if not config then
-    logger.error('Configuration error: ' .. (config_error or 'Unknown error'), 'SimplePM')
+    -- Use logger directly since it might not be configured yet
+    log(logger.levels.ERROR, 'Configuration error: ' .. (config_error or 'Unknown error'), 'SimplePM')
     return false
   end
+
+  setup_logging(config)
 
   -- Validate required files exist
   local files_valid, file_error = config_module.validate_files_exists(config)
@@ -63,7 +69,6 @@ function M.init(user_config)
     return false
   end
 
-  setup_logging(config)
   setup_keymaps(config)
 
   -- Create plugin manager and run setup
@@ -120,7 +125,19 @@ end
 
 ---Create user commands for debugging and management
 local function create_user_commands()
-  -- Debug command to show parsed plugins
+  vim.api.nvim_create_user_command('SimplePMShowLogs', function()
+    local history = logger.get_history()
+    if #history == 0 then
+      print('No SimplePM logs for this session.')
+      return
+    end
+    print('--- SimplePM Log History ---')
+    for _, msg in ipairs(history) do
+      print(msg)
+    end
+    print('--- End of Log History ---')
+  end, { desc = 'Show the SimplePM log history for the current session.' })
+
   vim.api.nvim_create_user_command('SimplePMDebugPlugins', function()
     local config_root = vim.fn.stdpath 'config'
     local plugins_toml_path = config_root .. '/plugins.toml'
@@ -131,11 +148,9 @@ local function create_user_commands()
     end
   end, { desc = 'Show parsed plugins from plugins.toml' })
 
-  -- Test keymap compatibility system
   vim.api.nvim_create_user_command('SimplePMTestKeymaps', function()
     if keymap_compat.is_active() then
       logger.info('Keymap compatibility system is active', 'SimplePM')
-      -- Test with sample keymap
       local K = keymap_compat.get_global()
       if K then
         K:map {
@@ -152,11 +167,13 @@ local function create_user_commands()
     end
   end, { desc = 'Test the keymap compatibility system' })
 
-  -- Reinstall plugins
   vim.api.nvim_create_user_command('SimplePMReinstall', function()
     local config, config_error = config_module.create()
     if not config then
-      logger.error('Could not create config for reinstall: ' .. (config_error or 'unknown'), 'SimplePM')
+      logger.error(
+        'Could not create config for reinstall: ' .. (config_error or 'unknown'),
+        'SimplePM'
+      )
       return
     end
 
@@ -170,7 +187,6 @@ local function create_user_commands()
   end, { desc = 'Reinstall plugins and source configuration' })
 end
 
--- Set up user commands when the module is loaded
 create_user_commands()
 
 return M
