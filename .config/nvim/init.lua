@@ -150,6 +150,7 @@ require('blink.cmp').setup {
     default = { 'lsp', 'path', 'snippets', 'buffer' },
   },
   fuzzy = { implementation = 'lua' },
+  signature = { enabled = true },
 }
 
 --- Formatting
