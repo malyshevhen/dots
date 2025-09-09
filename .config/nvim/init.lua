@@ -1,7 +1,11 @@
 --------------------------------------------------------------------------------
 -------------------------------- INIT ------------------------------------------
 --------------------------------------------------------------------------------
-local simple_pm = require 'simple_pm'
+vim.pack.add {
+  { src = 'https://github.com/malyshevhen/spm.nvim' },
+}
+
+local simple_pm = require 'spm'
 
 -- Set up the plugin management system with automatic configuration sourcing
 simple_pm.init {

@@ -1,4 +1,4 @@
-#:schema ./plugins-schema.json
+#:schema https://raw.githubusercontent.com/malyshevhen/spm.nvim/refs/heads/main/plugins-schema.json
 
 [[plugins]]
 name = "alpha-nvim"
@@ -116,8 +116,9 @@ servers = [
 
 [filetypes]
 [filetypes.pattern]
-'docker-compose%.yml' = 'yaml.docker-compose'
+'docker-compose%.yml'  = 'yaml.docker-compose'
 'docker-compose%.yaml' = 'yaml.docker-compose'
-'compose%.yml' = 'yaml.docker-compose'
-'compose%.yaml' = 'yaml.docker-compose'
-'*.raml' = 'raml'
+'compose%.yml'         = 'yaml.docker-compose'
+'compose%.yaml'        = 'yaml.docker-compose'
+'*.raml'               = 'raml'
+
