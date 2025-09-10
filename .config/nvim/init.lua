@@ -238,265 +238,106 @@ require('mini.move').setup {
 }
 require('mini.operators').setup()
 require('mini.comment').setup()
--- require('mini.icons').setup()
 
 --- Testing
-require('neotest').setup {
-  -- adapters will be configured dynamically in config function
-  discovery = {
-    enabled = true,
-    concurrent = 1,
-  },
-  diagnostic = {
-    enabled = true,
-    severity = 1,
-  },
-  floating = {
-    border = 'rounded',
-    max_height = 0.6,
-    max_width = 0.6,
-    options = {},
-  },
-  highlights = {
-    adapter_name = 'NeotestAdapterName',
-    border = 'NeotestBorder',
-    dir = 'NeotestDir',
-    expand_marker = 'NeotestExpandMarker',
-    failed = 'NeotestFailed',
-    file = 'NeotestFile',
-    focused = 'NeotestFocused',
-    indent = 'NeotestIndent',
-    marked = 'NeotestMarked',
-    namespace = 'NeotestNamespace',
-    passed = 'NeotestPassed',
-    running = 'NeotestRunning',
-    select_win = 'NeotestWinSelect',
-    skipped = 'NeotestSkipped',
-    target = 'NeotestTarget',
-    test = 'NeotestTest',
-    unknown = 'NeotestUnknown',
-    watching = 'NeotestWatching',
-  },
-  icons = {
-    child_indent = '│',
-    child_prefix = '├',
-    collapsed = '─',
-    expanded = '╮',
-    failed = '✖',
-    final_child_indent = ' ',
-    final_child_prefix = '╰',
-    non_collapsible = '─',
-    passed = '✓',
-    running = '●',
-    running_animated = { '/', '|', '\\', '-', '/', '|', '\\', '-' },
-    skipped = '○',
-    unknown = '?',
-    watching = '👁',
-  },
-  output = {
-    enabled = true,
-    open_on_run = 'short',
-  },
-  output_panel = {
-    enabled = true,
-    open = 'botright split | resize 15',
-  },
-  quickfix = {
-    enabled = true,
-    open = false,
-  },
-  run = {
-    enabled = true,
-  },
-  running = {
-    concurrent = true,
-  },
-  state = {
-    enabled = true,
-  },
-  status = {
-    enabled = true,
-    signs = true,
-    virtual_text = false,
-  },
-  strategies = {
-    integrated = {
-      height = 40,
-      width = 120,
-    },
-  },
-  summary = {
-    animated = true,
-    enabled = true,
-    expand_errors = true,
-    follow = true,
-    mappings = {
-      attach = 'a',
-      clear_marked = 'M',
-      clear_target = 'T',
-      debug = 'd',
-      debug_marked = 'D',
-      expand = { '<CR>', '<2-LeftMouse>' },
-      expand_all = 'e',
-      help = '?',
-      jumpto = 'i',
-      mark = 'm',
-      next_failed = 'J',
-      output = 'o',
-      prev_failed = 'K',
-      run = 'r',
-      run_marked = 'R',
-      short = 'O',
-      stop = 'u',
-      target = 't',
-      watch = 'w',
-    },
-    open = 'botright vsplit | vertical resize 50',
-  },
-  watch = {
-    enabled = true,
-    symbol_queries = {
-      python = [[
-          (function_definition
-            name: (identifier) @symbol.name) @symbol.definition
-          (class_definition
-            name: (identifier) @symbol.name) @symbol.definition
-        ]],
-      javascript = [[
-          (function_declaration
-            name: (identifier) @symbol.name) @symbol.definition
-          (method_definition
-            name: (property_identifier) @symbol.name) @symbol.definition
-          (arrow_function) @symbol.definition
-        ]],
-      typescript = [[
-          (function_declaration
-            name: (identifier) @symbol.name) @symbol.definition
-          (method_definition
-            name: (property_identifier) @symbol.name) @symbol.definition
-          (arrow_function) @symbol.definition
-        ]],
-      go = [[
-          (function_declaration
-            name: (identifier) @symbol.name) @symbol.definition
-          (method_declaration
-            name: (field_identifier) @symbol.name) @symbol.definition
-        ]],
-      elixir = [[
-          (call
-            target: (identifier) @symbol.name (#match? @symbol.name "^(test|describe)$")) @symbol.definition
-        ]],
-      java = [[
-          (method_declaration
-            name: (identifier) @symbol.name) @symbol.definition
-          (class_declaration
-            name: (identifier) @symbol.name) @symbol.definition
-        ]],
-      rust = [[
-          (function_item
-            name: (identifier) @symbol.name) @symbol.definition
-          (impl_item
-            type: (type_identifier) @symbol.name) @symbol.definition
-        ]],
-    },
-  },
-}
+local function setup_neotest()
+  -- Check if neotest is available
+  local ok_neotest, neotest = pcall(require, 'neotest')
+  if not ok_neotest then
+    return
+  end
 
--- Set up trouble.nvim integration
+  -- Auto-detect and configure available adapters
+  local adapters = {}
+  local adapter_configs = {
+    { name = 'neotest-python', check = 'python', config = { runner = 'pytest' } },
+    { name = 'neotest-golang', check = 'go' },
+    { name = 'neotest-elixir', check = 'mix', config = { env = { MIX_ENV = 'test' } } },
+    { name = 'neotest-java', check = 'mvn' },
+    { name = 'neotest-jest', check = 'npm', config = { jestCommand = 'npm test --' } },
+    { name = 'neotest-vitest', check = 'npm' },
+  }
+
+  -- Only load adapters for available tools
+  for _, adapter in ipairs(adapter_configs) do
+    local has_tool = false
+
+    -- Handle both string and table checks
+    if type(adapter.check) == 'string' then
+      has_tool = vim.fn.executable(adapter.check) == 1
+    elseif type(adapter.check) == 'table' then
+      -- Check if any of the tools are available
+      for _, tool in ipairs(adapter.check) do
+        if vim.fn.executable(tool) == 1 then
+          has_tool = true
+          break
+        end
+      end
+    end
+
+    if has_tool then
+      local ok, plugin = pcall(require, adapter.name)
+      if ok then
+        table.insert(adapters, adapter.config and plugin(adapter.config) or plugin)
+      end
+    end
+  end
+
+  -- Main neotest configuration
+  neotest.setup {
+    adapters = adapters,
+
+    -- Core settings
+    discovery = { enabled = true, concurrent = 1 },
+    diagnostic = { enabled = true, severity = 1 },
+
+    -- UI settings
+    floating = { border = 'rounded', max_height = 0.6, max_width = 0.6 },
+    icons = {
+      passed = '✓',
+      failed = '✖',
+      running = '●',
+      skipped = '○',
+      unknown = '?',
+      watching = '👁',
+    },
+
+    -- Output configuration
+    output = { enabled = true, open_on_run = 'short' },
+    output_panel = { enabled = true, open = 'botright split | resize 15' },
+    quickfix = { enabled = true, open = false },
+
+    -- Status and summary
+    status = { enabled = true, signs = true, virtual_text = false },
+    summary = {
+      enabled = true,
+      animated = true,
+      expand_errors = true,
+      follow = true,
+      open = 'botright vsplit | vertical resize 50',
+      mappings = {
+        expand = { '<CR>', '<2-LeftMouse>' },
+        run = 'r',
+        debug = 'd',
+        output = 'o',
+        help = '?',
+      },
+    },
+
+    -- Performance settings
+    running = { concurrent = true },
+    watch = { enabled = true },
+  }
+end
+
+-- Optional: Setup trouble.nvim integration
 local ok_trouble, trouble = pcall(require, 'trouble')
 if ok_trouble then
   trouble.setup()
 end
 
--- Simple adapter configuration
-local adapters = {}
-
--- Only add adapters that are actually available
-local adapter_configs = {
-  {
-    name = 'neotest-python',
-    executable = 'python',
-    config = {
-      dap = { justMyCode = false },
-      args = { '--log-level', 'DEBUG' },
-      runner = 'pytest',
-    },
-  },
-  {
-    name = 'neotest-golang',
-    executable = 'go',
-    config = {},
-  },
-  {
-    name = 'neotest-elixir',
-    executable = 'mix',
-    config = {
-      -- Environment configuration to prevent output parsing issues
-      env = {
-        MIX_ENV = 'test',
-        NO_COLOR = '1',
-      },
-      -- Use minimal args focused on reliable output
-      args = {
-        '--formatter',
-        'ExUnit.CLIFormatter',
-        '--no-deps-check',
-        '--max-failures',
-        '1000',
-      },
-    },
-  },
-  {
-    name = 'neotest-java',
-    executable = 'mvn',
-    config = {},
-  },
-  {
-    name = 'neotest-jest',
-    executable = 'npm',
-    config = {
-      jestCommand = 'npm test --',
-      env = { CI = true },
-      cwd = function()
-        return vim.fn.getcwd()
-      end,
-    },
-  },
-  {
-    name = 'neotest-vitest',
-    executable = 'npm',
-    config = {},
-  },
-}
-
-for _, adapter_info in ipairs(adapter_configs) do
-  if vim.fn.executable(adapter_info.executable) == 1 then
-    local ok, adapter = pcall(require, adapter_info.name)
-    if ok then
-      if next(adapter_info.config) then
-        table.insert(adapters, adapter(adapter_info.config))
-      else
-        table.insert(adapters, adapter)
-      end
-    end
-  end
-end
-
--- Simple configuration
-local neotest_config = {
-  adapters = adapters,
-  discovery = { enabled = true },
-  diagnostic = { enabled = true },
-  output = { enabled = true, open_on_run = 'short' },
-  quickfix = { enabled = true, open = false },
-  status = { enabled = true, signs = true, virtual_text = false },
-  summary = { enabled = true, animated = true },
-}
-
-local ok_neotest, neotest = pcall(require, 'neotest')
-if ok_neotest then
-  neotest.setup(neotest_config)
-end
+-- Initialize neotest
+setup_neotest()
 
 --- Theme
 require('rose-pine').setup {
